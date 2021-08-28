@@ -5,7 +5,7 @@ AWS Lambda Webservices change log
 
 ## 0.4.0 / 2021-08-29
 
-* Fixed issue #4: Return cookies in multiValueHeaders - @thekid
+* Fixed issue #2: Return cookies in multiValueHeaders - @thekid
 
 ## 0.3.0 / 2021-08-29
 
