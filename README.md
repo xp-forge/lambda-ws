@@ -51,7 +51,7 @@ Follow the steps shown on the [xp-forge/lambda README](https://github.com/xp-for
 $ aws apigatewayv2 create-api \
   --name hello-api \
   --protocol-type HTTP \
-  --target "arn:aws:lambda:us-east-1:XXXXXXXXXXXX:function:hello"
+  --target "arn:aws:lambda:eu-central-1:XXXXXXXXXXXX:function:hello"
 ```
 
 The API's HTTP endpoint will be returned by this command.
@@ -61,7 +61,7 @@ Invocation
 You can either open the HTTP endpoint in your browser or by using *curl*:
 
 ```bash
-$ curl -i https://XXXXXXXXXX.execute-api.us-east-1.amazonaws.com/hello?name=$USER
+$ curl -i https://XXXXXXXXXX.execute-api.eu-central-1.amazonaws.com/hello?name=$USER
 HTTP/2 200
 date: Sat, 28 Aug 2021 21:26:13 GMT
 content-type: text/plain
