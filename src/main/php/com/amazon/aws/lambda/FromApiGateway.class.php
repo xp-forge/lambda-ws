@@ -1,5 +1,6 @@
 <?php namespace com\amazon\aws\lambda;
 
+use io\streams\MemoryInputStream;
 use web\io\Input;
 
 /**
@@ -52,6 +53,11 @@ class FromApiGateway implements Input {
     if (!empty($this->event['cookies'])) {
       yield 'cookie' => implode('; ', $this->event['cookies']);
     }
+  }
+
+  /** @return ?io.streams.InputStream */
+  public function incoming() {
+    return isset($this->event['body']) ? new MemoryInputStream($this->input) : null;
   }
 
   /** @return ?string */

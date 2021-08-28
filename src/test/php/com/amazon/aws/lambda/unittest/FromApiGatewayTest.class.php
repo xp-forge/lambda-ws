@@ -1,6 +1,7 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
 use com\amazon\aws\lambda\FromApiGateway;
+use io\streams\Streams;
 use unittest\{Assert, Test, Values};
 use util\Bytes;
 
@@ -95,5 +96,20 @@ class FromApiGatewayTest {
   #[Test]
   public function read_base64_encoded_body() {
     Assert::equals('Test', $this->fixture('POST', '', ['content-length' => '8'], new Bytes('VGVzdA=='))->read());
+  }
+
+  #[Test]
+  public function stream_without_body() {
+    Assert::null($this->fixture('GET')->incoming());
+  }
+
+  #[Test]
+  public function stream_body() {
+    Assert::equals('Test', Streams::readAll($this->fixture('POST', '', ['content-length' => '4'], 'Test')->incoming()));
+  }
+
+  #[Test]
+  public function stream_base64_encoded_body() {
+    Assert::equals('Test', Streams::readAll($this->fixture('POST', '', ['content-length' => '8'], new Bytes('VGVzdA=='))->incoming()));
   }
 }
