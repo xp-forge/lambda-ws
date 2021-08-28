@@ -1,0 +1,20 @@
+{
+  "name" : "xp-forge/lambda-ws",
+  "type" : "library",
+  "homepage" : "http://xp-framework.net/",
+  "license" : "BSD-3-Clause",
+  "description" : "AWS Lambda Webservices for the XP Framework",
+  "keywords": ["module", "xp"],
+  "require" : {
+    "xp-framework/core": "^10.0 | ^9.0 | ^8.0 | ^7.0",
+    "xp-forge/lambda": "^1.0",
+    "xp-forge/web": "^2.0",
+    "php": ">=7.0.0"
+  },
+  "require-dev" : {
+    "xp-framework/unittest": "^11.0 | ^10.0 | ^9.0 | ^8.0 |^7.0"
+  },
+  "autoload" : {
+    "files" : ["src/main/php/autoload.php"]
+  }
+}
