@@ -3,6 +3,10 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 0.4.0 / 2021-08-29
+
+* Fixed issue #4: Return cookies in multiValueHeaders - @thekid
+
 ## 0.3.0 / 2021-08-29
 
 * Bumped dependency on `xp-forge/web` to 2.13.0+, simplifying routing

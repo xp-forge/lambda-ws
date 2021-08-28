@@ -18,19 +18,16 @@ class ResponseDocument extends Output {
    *
    * @param  int $status
    * @param  string $message
-   * @param  [:string] $headers
+   * @param  [:string[]] $headers
    */
   public function begin($status, $message, $headers) {
     $this->document= [
       'statusCode'        => $status,
       'statusDescription' => $message,
       'isBase64Encoded'   => false,
-      'headers'           => [],
+      'multiValueHeaders' => $headers,
       'body'              => null,
     ];
-    foreach ($headers as $name => $values) {
-      $this->document['headers'][$name]= implode(',', $values);
-    }
   }
 
   /**
@@ -63,7 +60,7 @@ class ResponseDocument extends Output {
   /** @return void */
   public function finish() {
     if (null !== $this->document['body']) {
-      $this->document['headers']['Content-Length']= (string)strlen($this->document['body']);
+      $this->document['multiValueHeaders']['Content-Length']= [(string)strlen($this->document['body'])];
     }
   }
 }
