@@ -66,6 +66,18 @@ apigw-requestid: EytVLjTSliAEJUw=
 Hello timmf
 ```
 
+Deploying changes
+-----------------
+After having initially created your lambda, you can update its code as follows:
+
+```bash
+$ xp lambda package Greet.class.php
+$ aws lambda update-function-code \
+  --function-name greet \
+  --zip-file fileb://./function.zip \
+  --publish
+```
+
 See also
 --------
 * [Developing an HTTP API in API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html)
