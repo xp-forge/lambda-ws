@@ -1,7 +1,7 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
 use com\amazon\aws\lambda\FromApiGateway;
-use unittest\{Assert, Test};
+use unittest\{Assert, Test, Values};
 use util\Bytes;
 
 class FromApiGatewayTest {
