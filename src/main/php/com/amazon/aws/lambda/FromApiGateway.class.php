@@ -1,7 +1,7 @@
 <?php namespace com\amazon\aws\lambda;
 
 use io\streams\MemoryInputStream;
-use web\io\Input;
+use web\io\{Input, Parts};
 
 /**
  * Input from Amazon AWS API Gateway version 2.0
@@ -94,6 +94,6 @@ class FromApiGateway implements Input {
    * @return iterable
    */
   public function parts($boundary) {
-    return [];
+    return new Parts($this->incoming(), $boundary);
   }
 }
