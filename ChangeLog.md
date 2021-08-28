@@ -3,6 +3,12 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 0.3.0 / 2021-08-29
+
+* Bumped dependency on `xp-forge/web` to 2.13.0+, simplifying routing
+  setup via `Routing::cast()`.
+  (@thekid)
+
 ## 0.2.0 / 2021-08-28
 
 * Implemented issue #1: File uploads - @thekid
