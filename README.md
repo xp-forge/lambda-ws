@@ -28,13 +28,15 @@ class Greet extends HttpApi {
   public function routes($env) {
     return ['/' => function($req, $res) {
       $res->answer(200);
-      $res->send('Hello '.($req->param('name') ?? 'Guest').' from '.$req->value('context')->region, 'text/plain');
+      $res->send('Hello '.($req->param('name') ?? 'Guest'), 'text/plain');
     }];
   }
 }
 ```
 
 To run existing web applications, return an instance of your application subclass from the *routes()* method.
+
+The lambda execution context is available via `$request->value('context')`.
 
 Setup and deployment
 --------------------
