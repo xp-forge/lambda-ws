@@ -33,15 +33,14 @@ abstract class HttpApi extends Handler {
     });
 
     // Determine routing
-    $r= $this->routes(new Environment(
+    $routing= Routing::cast($this->routes(new Environment(
       getenv('PROFILE') ?: 'prod',
       $this->environment->root,
       $this->environment->path('static'),
       [$this->environment->properties],
       [],
       $logging
-    ));
-    $routing= $r instanceof Application ? $r->routing() : Routing::cast($r);
+    )));
 
     // Return event handler
     return function($event, $context) use($routing, $logging) {
