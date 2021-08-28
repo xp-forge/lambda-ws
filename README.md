@@ -27,16 +27,21 @@ class Greet extends HttpApi {
    */
   public function routes($env) {
     return ['/' => function($req, $res) {
+      $greeting= sprintf(
+        'Hello %s from PHP %s @ %s',
+        $req->param('name') ?? $req->header('User-Agent') ?? 'Guest',
+        PHP_VERSION,
+        $req->value('context')->region
+      );
+
       $res->answer(200);
-      $res->send('Hello '.($req->param('name') ?? 'Guest'), 'text/plain');
+      $res->send($greeting, 'text/plain');
     }];
   }
 }
 ```
 
 To run existing web applications, return an instance of your application subclass from the *routes()* method.
-
-The lambda execution context is available via `$request->value('context')`.
 
 Setup and deployment
 --------------------
@@ -58,12 +63,12 @@ You can either open the HTTP endpoint in your browser or by using *curl*:
 ```bash
 $ curl -i https://XXXXXXXXXX.execute-api.us-east-1.amazonaws.com/hello?name=$USER
 HTTP/2 200
-date: Sat, 28 Aug 2021 19:32:36 GMT
+date: Sat, 28 Aug 2021 21:26:13 GMT
 content-type: text/plain
-content-length: 11
-apigw-requestid: EytVLjTSliAEJUw=
+content-length: 42
+apigw-requestid: Ey9-Xg_UliAEPKQ=
 
-Hello timmf
+Hello timmf from PHP 8.0.10 @ eu-central-1
 ```
 
 Deploying changes
