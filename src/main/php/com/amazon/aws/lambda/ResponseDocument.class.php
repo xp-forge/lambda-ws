@@ -2,6 +2,11 @@
 
 use web\io\Output;
 
+/**
+ * Response document
+ *
+ * @test com.amazon.aws.lambda.unittest.ResponseDocumentTest
+ */
 class ResponseDocument extends Output {
   public $document;
 
