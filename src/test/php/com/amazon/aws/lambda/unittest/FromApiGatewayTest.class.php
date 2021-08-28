@@ -11,8 +11,8 @@ class FromApiGatewayTest {
   private function fixture($method= 'GET', $query= '', $headers= [], $body= null) {
     return new FromApiGateway([
       'version'        => '2.0',
-      'routeKey'       => "ANY /test",
-      'rawPath'        => "/default/test",
+      'routeKey'       => 'ANY /test',
+      'rawPath'        => '/default/test',
       'rawQueryString' => $query,
       'cookies'        => [self::COOKIE],
       'headers'        => $headers,
@@ -23,13 +23,13 @@ class FromApiGatewayTest {
         'domainPrefix' => 'r3pmxmplak',
         'http'         => [ 
           'method'    => $method,
-          'path'      => "/default/test",
+          'path'      => '/default/test',
           'protocol'  => 'HTTP/1.1',
           'sourceIp'  => '127.0.0.1',
           'userAgent' => 'XP/Test'
         ],
         'requestId'    => 'JKJaXmPLvHcESHA=',
-        'routeKey'     => "ANY /test",
+        'routeKey'     => 'ANY /test',
         'stage'        => 'default',
         'time'         => '10/Mar/2020:05:16:23 +0000',
         'timeEpoch'    => 1583817383220
