@@ -3,6 +3,9 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 0.4.1 / 2021-08-29
+
+* Added various tests, increasing test coverage to 100%. See #3 - @thekid
 * Fixed error handling for `web.Error` instances - @thekid
 * Fixed `FromApiGateway::readLine()` not returning EOF correctly - @thekid
 
