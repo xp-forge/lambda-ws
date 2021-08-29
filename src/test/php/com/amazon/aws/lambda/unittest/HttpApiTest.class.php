@@ -1,12 +1,13 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
 use com\amazon\aws\lambda\{HttpApi, Environment, Context};
+use io\streams\{StringWriter, MemoryOutputStream};
 use lang\MethodNotImplementedException;
 use unittest\{Assert, Before, Test, Values};
 use web\{Application, Error};
 
 class HttpApiTest {
-  private $context;
+  private $context, $environment, $trace;
 
   /** Returns a new event */
   private function invoke($target, $method= 'GET', $query= '', $headers= [], $body= null) {
@@ -38,11 +39,17 @@ class HttpApiTest {
       'isBase64Encoded' => false,
       'body'            => $body
     ];
+
+    // Reset trace to beginning
+    $this->trace->truncate(0);
+    $this->trace->seek(0);
     return $target($event, $this->context);
   }
 
   #[Before]
   public function context() {
+    $this->trace= new MemoryOutputStream();
+    $this->environment= new Environment('test', new StringWriter($this->trace));
     $this->context= new Context([
       'Lambda-Runtime-Aws-Request-Id'       => ['3e1afeb0-cde4-1d0e-c3c0-66b15046bb88'],
       'Lambda-Runtime-Invoked-Function-Arn' => ['arn:aws:lambda:us-east-1:1185465369:function:test'],
@@ -55,7 +62,7 @@ class HttpApiTest {
 
   #[Test]
   public function with_handler_function() {
-    $fixture= new class(new Environment('test')) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpApi {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $res->answer(200);
@@ -78,7 +85,7 @@ class HttpApiTest {
 
   #[Test]
   public function with_web_application() {
-    $fixture= new class(new Environment('test')) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpApi {
       public function routes($env) {
         return new class($env) extends Application {
           public function routes() {
@@ -105,7 +112,7 @@ class HttpApiTest {
 
   #[Test]
   public function throwing_error() {
-    $fixture= new class(new Environment('test')) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpApi {
       public function routes($env) {
         return ['/' => function($req, $res) {
           throw new Error(404, 'Not Found');
@@ -127,7 +134,7 @@ class HttpApiTest {
 
   #[Test]
   public function throwing_exception() {
-    $fixture= new class(new Environment('test')) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpApi {
       public function routes($env) {
         return ['/' => function($req, $res) {
           throw new MethodNotImplementedException('Not implemented', '/');
@@ -144,6 +151,47 @@ class HttpApiTest {
         'body'              => 'Error web.InternalServerError(#500: Not implemented)',
       ],
       $this->invoke($fixture->target(), 'GET')
+    );
+  }
+
+  #[Test]
+  public function has_access_to_context() {
+    $fixture= new class($this->environment) extends HttpApi {
+      public function routes($env) {
+        return ['/' => function($req, $res) {
+          $res->answer(200);
+          $res->send('Hello '.$req->param('name').' from '.$req->value('context')->invokedFunctionArn, 'text/plain');
+        }];
+      }
+    };
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => false,
+        'multiValueHeaders' => ['Content-Type' => ['text/plain'], 'Content-Length' => ['65']],
+        'body'              => 'Hello Test from arn:aws:lambda:us-east-1:1185465369:function:test',
+      ],
+      $this->invoke($fixture->target(), 'GET', 'name=Test')
+    );
+  }
+
+  #[Test]
+  public function writes_trace_message() {
+    $fixture= new class($this->environment) extends HttpApi {
+      public function routes($env) {
+        return ['/' => function($req, $res) {
+          $res->answer(200);
+          $res->send('Hello '.$req->param('name').' from '.$req->value('context')->invokedFunctionArn, 'text/plain');
+        }];
+      }
+    };
+    $this->invoke($fixture->target(), 'GET', 'name=Test');
+
+    Assert::equals(
+      "TRACE [Root=1-dc99d00f-c079a84d433534434534ef0d;Parent=91ed514f1e5c03b2;Sampled=1] 200 GET /default/test?name=Test \n",
+      $this->trace->bytes()
     );
   }
 }
