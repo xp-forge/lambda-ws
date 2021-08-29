@@ -3,6 +3,8 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 1.0.0 / 2021-08-29
+
 * Made lambda handler raise errors for missing or unhandled versions
   (@thekid)
 * Implemented gateway payload version 2.0 cookies correctly - @thekid
