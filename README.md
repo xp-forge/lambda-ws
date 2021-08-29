@@ -66,10 +66,10 @@ $ curl -i https://XXXXXXXXXX.execute-api.eu-central-1.amazonaws.com/hello?name=$
 HTTP/2 200
 date: Sat, 28 Aug 2021 21:26:13 GMT
 content-type: text/plain
-content-length: 42
+content-length: 60
 apigw-requestid: Ey9-Xg_UliAEPKQ=
 
-Hello timmf from PHP 8.0.10 @ eu-central-1
+Hello timmf from PHP 8.0.10 on stage $default @ eu-central-1
 ```
 
 Deploying changes
