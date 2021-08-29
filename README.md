@@ -31,7 +31,7 @@ class Greet extends HttpApi {
         'Hello %s from PHP %s on stage %s @ %s',
         $req->param('name') ?? $req->header('User-Agent') ?? 'Guest',
         PHP_VERSION,
-        $req->value('request')['stage'],
+        $req->value('request')->stage,
         $req->value('context')->region
       );
 
@@ -82,6 +82,30 @@ $ aws lambda update-function-code \
   --function-name greet \
   --zip-file fileb://./function.zip \
   --publish
+```
+
+Request context
+---------------
+The *requestContext* event member is passed into a request value named *request*, and contains a RequestContext instance defined as follows:
+
+```php
+public class com.amazon.aws.lambda.RequestContext {
+  public string $accountId
+  public string $apiId
+  public string $domainName
+  public string $domainPrefix
+  public string $requestId
+  public string $routeKey
+  public string $stage
+  public util.Date $time
+  public [:string] $http
+
+  public function __construct(array $context)
+
+  public function toString(): string
+  public function hashCode(): string
+  public function compareTo(var $value): int
+}
 ```
 
 See also
