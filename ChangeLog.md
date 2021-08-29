@@ -3,6 +3,10 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+* Made remote address available in HTTP headers, populated via events'
+  requestContext.http.sourceIp member
+  (@thekid)
+
 ## 0.4.1 / 2021-08-29
 
 * Added various tests, increasing test coverage to 100%. See #3 - @thekid

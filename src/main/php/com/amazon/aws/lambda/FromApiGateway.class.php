@@ -49,6 +49,7 @@ class FromApiGateway implements Input {
 
   /** @return iterable */
   public function headers() {
+    yield 'remote-addr' => $this->event['requestContext']['http']['sourceIp'] ?? '127.0.0.1';
     yield from $this->event['headers'] ?? [];
     if (!empty($this->event['cookies'])) {
       yield 'cookie' => implode('; ', $this->event['cookies']);

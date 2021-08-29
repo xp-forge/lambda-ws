@@ -28,7 +28,7 @@ class FromApiGatewayTest {
           'method'    => $method,
           'path'      => '/default/test',
           'protocol'  => 'HTTP/1.1',
-          'sourceIp'  => '127.0.0.1',
+          'sourceIp'  => '192.168.178.1',
           'userAgent' => 'XP/Test'
         ],
         'requestId'    => 'JKJaXmPLvHcESHA=',
@@ -78,9 +78,9 @@ class FromApiGatewayTest {
   }
 
   #[Test, Values([[[]], [['accept' => '*/*', 'user-agent' => 'test']]])]
-  public function headers_include_cookies($headers) {
+  public function headers_include_cookies_and_remote_addr($headers) {
     Assert::equals(
-      ['cookie' => self::COOKIE] + $headers,
+      ['remote-addr' => '192.168.178.1', 'cookie' => self::COOKIE] + $headers,
       iterator_to_array($this->fixture('GET', '', $headers)->headers())
     );
   }
