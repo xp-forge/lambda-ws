@@ -21,7 +21,7 @@ class RequestContext implements Value {
     $this->requestId= $context['requestId'];
     $this->routeKey= $context['routeKey'];
     $this->stage= $context['stage'];
-    $this->time= new Date('@'.($context['timeEpoch'] / 1000));
+    $this->time= new Date((int)($context['timeEpoch'] / 1000));
     $this->http= $context['http'];
   }
 
