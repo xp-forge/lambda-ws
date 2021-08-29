@@ -3,6 +3,8 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+* Implemented gateway payload version 2.0 cookies correctly - @thekid
+
 ## 0.7.0 / 2021-08-29
 
 * Wrapped requestContext in `com.amazon.aws.lambda.RequestContext`

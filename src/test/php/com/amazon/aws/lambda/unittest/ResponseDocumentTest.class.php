@@ -22,7 +22,7 @@ class ResponseDocumentTest {
         'statusCode'        => 204,
         'statusDescription' => 'No Content',
         'isBase64Encoded'   => false,
-        'multiValueHeaders' => [],
+        'headers'           => [],
         'body'              => null,
       ],
       $out->document
@@ -41,7 +41,7 @@ class ResponseDocumentTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'multiValueHeaders' => ['Content-Length' => ['4']],
+        'headers'           => ['Content-Length' => '4'],
         'body'              => 'Test',
       ],
       $out->document
@@ -60,7 +60,7 @@ class ResponseDocumentTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'multiValueHeaders' => ['Content-Length' => ['4']],
+        'headers'           => ['Content-Length' => '4'],
         'body'              => 'Test',
       ],
       $out->document

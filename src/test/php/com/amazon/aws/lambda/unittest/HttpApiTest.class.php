@@ -4,7 +4,7 @@ use com\amazon\aws\lambda\{HttpApi, Environment, Context};
 use io\streams\{StringWriter, MemoryOutputStream};
 use lang\MethodNotImplementedException;
 use unittest\{Assert, Before, Test, Values};
-use web\{Application, Error};
+use web\{Application, Cookie, Error};
 
 class HttpApiTest {
   private $context, $environment, $trace;
@@ -16,7 +16,7 @@ class HttpApiTest {
       'routeKey'       => 'ANY /test',
       'rawPath'        => '/default/test',
       'rawQueryString' => $query,
-      'cookies'        => [],
+      'cookies'        => ['name=Test'],
       'headers'        => $headers,
       'requestContext' => [
         'accountId'    => '123456789012',
@@ -76,7 +76,7 @@ class HttpApiTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'multiValueHeaders' => ['Content-Type' => ['text/plain'], 'Content-Length' => ['10']],
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '10'],
         'body'              => 'Hello Test',
       ],
       $this->invoke($fixture->target(), 'GET', 'name=Test')
@@ -103,7 +103,7 @@ class HttpApiTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'multiValueHeaders' => ['Content-Type' => ['text/plain'], 'Content-Length' => ['10']],
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '10'],
         'body'              => 'Hello Test',
       ],
       $this->invoke($fixture->target(), 'GET', 'name=Test')
@@ -170,7 +170,7 @@ class HttpApiTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'multiValueHeaders' => ['Content-Type' => ['text/plain'], 'Content-Length' => ['26']],
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '26'],
         'body'              => 'Hello Test from r3pmxmplak',
       ],
       $this->invoke($fixture->target(), 'GET', 'name=Test')
@@ -193,7 +193,59 @@ class HttpApiTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'multiValueHeaders' => ['Content-Type' => ['text/plain'], 'Content-Length' => ['65']],
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '65'],
+        'body'              => 'Hello Test from arn:aws:lambda:us-east-1:1185465369:function:test',
+      ],
+      $this->invoke($fixture->target(), 'GET', 'name=Test')
+    );
+  }
+
+  #[Test]
+  public function reads_cookies() {
+    $fixture= new class($this->environment) extends HttpApi {
+      public function routes($env) {
+        return ['/' => function($req, $res) {
+          $name= $req->cookie('name');
+
+          $res->answer(200);
+          $res->send('Hello '.$name.' from '.$req->value('context')->invokedFunctionArn, 'text/plain');
+        }];
+      }
+    };
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => false,
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '65'],
+        'body'              => 'Hello Test from arn:aws:lambda:us-east-1:1185465369:function:test',
+      ],
+      $this->invoke($fixture->target(), 'GET', 'name=Test')
+    );
+  }
+
+  #[Test]
+  public function sets_cookies() {
+    $fixture= new class($this->environment) extends HttpApi {
+      public function routes($env) {
+        return ['/' => function($req, $res) {
+          $name= $req->param('name');
+
+          $res->answer(200);
+          $res->cookie(new Cookie('name', $name));
+          $res->send('Hello '.$name.' from '.$req->value('context')->invokedFunctionArn, 'text/plain');
+        }];
+      }
+    };
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => false,
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '65'],
+        'cookies'           => ['name=Test; SameSite=Lax; HttpOnly'],
         'body'              => 'Hello Test from arn:aws:lambda:us-east-1:1185465369:function:test',
       ],
       $this->invoke($fixture->target(), 'GET', 'name=Test')
