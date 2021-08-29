@@ -44,7 +44,7 @@ class Greet extends HttpApi {
 
 The request context is passed into a request value named *request* and contains a [RequestContext instance](https://github.com/xp-forge/lambda-ws#request-context). The [lambda context](https://github.com/xp-forge/lambda#context) is passed in *context*.
 
-To run existing web applications, return an instance of your application subclass from the *routes()* method. 
+To run existing web applications, return an instance of your application subclass from the *routes()* method. This way, you can also test them locally using the `xp web` command.
 
 Setup and deployment
 --------------------
