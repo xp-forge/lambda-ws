@@ -7,7 +7,6 @@ use web\io\{Input, Parts};
  * Input from Amazon AWS API Gateway version 2.0
  *
  * @test com.amazon.aws.lambda.unittest.FromApiGatewayTest
- * @see  https://github.com/awsdocs/aws-lambda-developer-guide/blob/main/sample-apps/nodejs-apig/event-v2.json
  * @see  https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
  */
 class FromApiGateway implements Input {

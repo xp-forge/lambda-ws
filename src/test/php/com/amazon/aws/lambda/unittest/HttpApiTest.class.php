@@ -160,7 +160,7 @@ class HttpApiTest {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $res->answer(200);
-          $res->send('Hello '.$req->param('name').' from '.$req->value('request')['apiId'], 'text/plain');
+          $res->send('Hello '.$req->param('name').' from '.$req->value('request')->apiId, 'text/plain');
         }];
       }
     };
