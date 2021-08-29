@@ -6,6 +6,7 @@ use web\{Application, Environment, Error, InternalServerError, Logging, Request,
 /**
  * AWS Lambda with Amazon HTTP API Gateway
  *
+ * @test com.amazon.aws.lambda.unittest.HttpApiTest
  * @see  https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html
  */
 abstract class HttpApi extends Handler {
@@ -52,7 +53,7 @@ abstract class HttpApi extends Handler {
         $logging->log($request, $response);
         return $response->output()->document;
       } catch (Throwable $t) {
-        $e= $t instanceof Error ? $e : new InternalServerError($t);
+        $e= $t instanceof Error ? $t : new InternalServerError($t);
         $logging->log($request, $response, $e);
         return $response->output()->error($e);
       }

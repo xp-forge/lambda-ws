@@ -3,6 +3,7 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+* Fixed error handling for `web.Error` instances - @thekid
 * Fixed `FromApiGateway::readLine()` not returning EOF correctly - @thekid
 
 ## 0.4.0 / 2021-08-29
