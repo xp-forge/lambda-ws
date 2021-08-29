@@ -155,6 +155,29 @@ class HttpApiTest {
   }
 
   #[Test]
+  public function has_access_to_request() {
+    $fixture= new class($this->environment) extends HttpApi {
+      public function routes($env) {
+        return ['/' => function($req, $res) {
+          $res->answer(200);
+          $res->send('Hello '.$req->param('name').' from '.$req->value('request')['apiId'], 'text/plain');
+        }];
+      }
+    };
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => false,
+        'multiValueHeaders' => ['Content-Type' => ['text/plain'], 'Content-Length' => ['26']],
+        'body'              => 'Hello Test from r3pmxmplak',
+      ],
+      $this->invoke($fixture->target(), 'GET', 'name=Test')
+    );
+  }
+
+  #[Test]
   public function has_access_to_context() {
     $fixture= new class($this->environment) extends HttpApi {
       public function routes($env) {

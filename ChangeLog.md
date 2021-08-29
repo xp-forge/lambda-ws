@@ -3,6 +3,10 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 0.5.0 / 2021-08-29
+
+* Made events' requestContext member accessible via *request* value
+  (@thekid)
 * Made remote address available in HTTP headers, populated via events'
   requestContext.http.sourceIp member
   (@thekid)
