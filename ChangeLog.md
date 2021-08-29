@@ -3,6 +3,11 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 0.7.0 / 2021-08-29
+
+* Wrapped requestContext in `com.amazon.aws.lambda.RequestContext`
+  (@thekid)
+
 ## 0.6.0 / 2021-08-29
 
 * Made compatible with `xp-forge/lambda` version 2.0.0 - @thekid

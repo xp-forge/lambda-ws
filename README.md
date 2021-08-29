@@ -89,7 +89,7 @@ Request context
 The *requestContext* event member is passed into a request value named *request*, and contains a RequestContext instance defined as follows:
 
 ```php
-public class com.amazon.aws.lambda.RequestContext {
+public class com.amazon.aws.lambda.RequestContext implements lang.Value {
   public string $accountId
   public string $apiId
   public string $domainName
