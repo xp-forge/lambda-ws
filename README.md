@@ -28,9 +28,10 @@ class Greet extends HttpApi {
   public function routes($env) {
     return ['/' => function($req, $res) {
       $greeting= sprintf(
-        'Hello %s from PHP %s @ %s',
+        'Hello %s from PHP %s on stage %s @ %s',
         $req->param('name') ?? $req->header('User-Agent') ?? 'Guest',
         PHP_VERSION,
+        $req->value('request')['stage'],
         $req->value('context')->region
       );
 
