@@ -45,14 +45,12 @@ abstract class HttpApi extends Handler {
 
     // Return event handler
     return function($event, $context) use($routing, $logging) {
-      $req= (new Request(new FromApiGateway($event)))
-        ->pass('context', $context)
-        ->pass('request', new RequestContext($event['requestContext']))
-      ;
+      $in= new FromApiGateway($event);
+      $req= new Request($in);
       $res= new Response(new ResponseDocument());
 
       try {
-        foreach ($routing->service($req, $res) ?? [] as $_) { }
+        foreach ($routing->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
         $logging->log($req, $res);
         return $res->output()->document;
       } catch (Throwable $t) {

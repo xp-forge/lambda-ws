@@ -1,6 +1,7 @@
 <?php namespace com\amazon\aws\lambda;
 
 use io\streams\MemoryInputStream;
+use lang\IllegalArgumentException;
 use web\io\{Input, Parts};
 
 /**
@@ -12,11 +13,20 @@ use web\io\{Input, Parts};
 class FromApiGateway implements Input {
   private $event, $input;
 
-  /** @param [:var] $event */
+  /**
+   * Creates a new instance from a given event
+   *
+   * @param  [:var] $event
+   * @throws lang.IllegalArgumentException for missing or unhandled versions
+   */
   public function __construct($event) {
-    $this->event= $event;
+    if (!isset($event['version'])) {
+      throw new IllegalArgumentException('Cannot handle API gateway without version');
+    } else if ('2.0' !== $event['version']) {
+      throw new IllegalArgumentException('Cannot handle API gateway version '.$event['version']);
+    }
 
-    // Handle input body
+    // Handle event body
     if (!isset($event['body'])) {
       $this->input= '';
     } else if ($event['isBase64Encoded']) {
@@ -24,7 +34,11 @@ class FromApiGateway implements Input {
     } else {
       $this->input= $event['body'];
     }
+    $this->event= $event;
   }
+
+  /** @return com.amazon.aws.lambda.RequestContext */
+  public function context() { return new RequestContext($this->event['requestContext']); }
 
   /** @return string */
   public function version() {
