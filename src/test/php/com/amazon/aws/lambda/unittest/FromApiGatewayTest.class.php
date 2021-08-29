@@ -4,9 +4,11 @@ use com\amazon\aws\lambda\FromApiGateway;
 use io\streams\Streams;
 use unittest\{Assert, Test, Values};
 use util\Bytes;
+use web\io\Part;
 
 class FromApiGatewayTest {
-  const COOKIE = 'session=7AABXMPL1AFD9BBF-0643XMPL09956DE2';
+  const COOKIE   = 'session=7AABXMPL1AFD9BBF-0643XMPL09956DE2';
+  const BOUNDARY = '------------------------899f0c287170dd63f';
 
   /** Returns a new fixture */
   private function fixture($method= 'GET', $query= '', $headers= [], $body= null) {
@@ -134,5 +136,35 @@ class FromApiGatewayTest {
   #[Test]
   public function stream_base64_encoded_body() {
     Assert::equals('Test', Streams::readAll($this->fixture('POST', '', ['content-length' => '8'], new Bytes('VGVzdA=='))->incoming()));
+  }
+
+  #[Test]
+  public function file_upload_including_form_value() {
+    $payload= sprintf(implode("\r\n", [
+      '--%1$s',
+      'Content-Disposition: form-data; name="upload"; filename="test.txt"',
+      'Content-Type: text/plain',
+      '',
+      'Test',
+      '--%1$s',
+      'Content-Disposition: form-data; name="submit"',
+      '',
+      'Upload',
+      '--%1$s--',
+      ''
+    ]), self::BOUNDARY);
+    $fixture= $this->fixture('POST', '', ['content-length' => (string)strlen($payload)], $payload);
+    $parts= [];
+    foreach ($fixture->parts(self::BOUNDARY) as $name => $part) {
+      if (Part::FILE === $part->kind()) {
+        $parts[]= ['file', $name.':'.$part->name().':'.$part->type(), $part->bytes()];
+      } else if (Part::PARAM === $part->kind()) {
+        $parts[]= ['param', $name, $part->value()];
+      } else {
+        $parts[]= ['incomplete', $name, $part->error()];
+      }
+    }
+
+    Assert::equals([['file', 'upload:test.txt:text/plain', 'Test'], ['param', 'submit', 'Upload']], $parts);
   }
 }
