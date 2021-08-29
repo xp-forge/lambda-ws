@@ -42,7 +42,9 @@ class Greet extends HttpApi {
 }
 ```
 
-To run existing web applications, return an instance of your application subclass from the *routes()* method.
+The request context is passed into a request value named *request* and contains a [RequestContext instance](https://github.com/xp-forge/lambda-ws#request-context). The [lambda context](https://github.com/xp-forge/lambda#context) is passed in *context*.
+
+To run existing web applications, return an instance of your application subclass from the *routes()* method. 
 
 Setup and deployment
 --------------------
@@ -86,7 +88,7 @@ $ aws lambda update-function-code \
 
 Request context
 ---------------
-The *requestContext* event member is passed into a request value named *request*, and contains a RequestContext instance defined as follows:
+The request context passed via the *request* value is defined as follows:
 
 ```php
 public class com.amazon.aws.lambda.RequestContext implements lang.Value {
