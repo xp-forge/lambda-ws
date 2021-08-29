@@ -84,7 +84,7 @@ class FromApiGatewayTest {
   }
 
   #[Test]
-  public function without_body() {
+  public function read_without_body() {
     Assert::equals('', $this->fixture('GET')->read());
   }
 
@@ -96,6 +96,29 @@ class FromApiGatewayTest {
   #[Test]
   public function read_base64_encoded_body() {
     Assert::equals('Test', $this->fixture('POST', '', ['content-length' => '8'], new Bytes('VGVzdA=='))->read());
+  }
+
+  #[Test]
+  public function read_part_of_body() {
+    $fixture= $this->fixture('POST', '', ['content-length' => '4'], 'Test');
+
+    Assert::equals(['Te', 'st'], [$fixture->read(2), $fixture->read()]);
+  }
+
+  #[Test]
+  public function readLine_without_body() {
+    Assert::null($this->fixture('GET')->readLine());
+  }
+
+  #[Test, Values([['Test', ['Test']], ["One\nTwo", ['One', 'Two']], ["One\nTwo\n", ['One', 'Two']]])]
+  public function readLine($input, $outcome) {
+    $fixture= $this->fixture('POST', '', ['content-length' => strlen($input)], $input);
+    $lines= [];
+    while (null !== ($line= $fixture->readLine())) {
+      $lines[]= $line;
+    }
+
+    Assert::equals($outcome, $lines);
   }
 
   #[Test]

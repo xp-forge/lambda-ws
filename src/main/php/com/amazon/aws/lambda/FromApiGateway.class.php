@@ -62,11 +62,16 @@ class FromApiGateway implements Input {
 
   /** @return ?string */
   public function readLine() {
-    $p= strpos($this->input, "\n");
-    if (false === $p) return '' === $this->input ? null : $this->input;
+    if ('' === $this->input) return null;
 
-    $line= substr($this->input, 0, $p);
-    $this->input= substr($this->input, $p + 1);
+    $p= strpos($this->input, "\n");
+    if (false === $p) {
+      $line= $this->input;
+      $this->input= '';
+    } else {
+      $line= substr($this->input, 0, $p);
+      $this->input= substr($this->input, $p + 1);
+    }
     return $line;
   }
 
