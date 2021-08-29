@@ -3,6 +3,10 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 0.6.0 / 2021-08-29
+
+* Made compatible with `xp-forge/lambda` version 2.0.0 - @thekid
+
 ## 0.5.0 / 2021-08-29
 
 * Made events' requestContext member accessible via *request* value
