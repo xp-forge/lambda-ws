@@ -3,6 +3,11 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 1.0.3 / 2022-02-26
+
+* Made library compatible with `xp-forge/lambda` version 4.0.0
+  (@thekid)
+
 ## 1.0.2 / 2021-10-21
 
 * Made library compatible with XP 11, `xp-forge/lambda` version 3.0.0
