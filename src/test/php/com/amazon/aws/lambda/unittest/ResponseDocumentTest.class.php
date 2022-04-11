@@ -48,6 +48,63 @@ class ResponseDocumentTest {
     );
   }
 
+  #[Test, Values(['text/plain', 'text/html', 'text/plain; charset=utf-8'])]
+  public function with_text_content($mime) {
+    $out= new ResponseDocument();
+    $out->begin(200, 'OK', ['Content-Type' => [$mime]]);
+    $out->write('Test');
+    $out->close();
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => false,
+        'headers'           => ['Content-Type' => $mime, 'Content-Length' => '4'],
+        'body'              => 'Test',
+      ],
+      $out->document
+    );
+  }
+
+  #[Test, Values(['application/json', 'application/json; charset=utf-8', 'application/vnd.example.test-v2+json', 'application/vnd.example.test-v2+json; charset=utf-8'])]
+  public function with_json_content($mime) {
+    $out= new ResponseDocument();
+    $out->begin(200, 'OK', ['Content-Type' => [$mime]]);
+    $out->write('{"key":"value"}');
+    $out->close();
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => false,
+        'headers'           => ['Content-Type' => $mime, 'Content-Length' => '15'],
+        'body'              => '{"key":"value"}',
+      ],
+      $out->document
+    );
+  }
+
+  #[Test]
+  public function with_binary_content() {
+    $out= new ResponseDocument();
+    $out->begin(200, 'OK', ['Content-Type' => ['image/gif']]);
+    $out->write('GIF89a...');
+    $out->close();
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => true,
+        'headers'           => ['Content-Type' => 'image/gif', 'Content-Length' => '9'],
+        'body'              => 'R0lGODlhLi4u',
+      ],
+      $out->document
+    );
+  }
+
   #[Test]
   public function write_to_stream() {
     $out= new ResponseDocument();
