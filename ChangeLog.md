@@ -3,6 +3,10 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 1.1.1 / 2022-04-12
+
+* Merged PR #7: Fix redirects yielding "null" - @thekid
+
 ## 1.1.0 / 2022-04-12
 
 * Merged PR #5: Encode binary responses using base 64 - @thekid
