@@ -3,6 +3,10 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 1.1.0 / 2022-04-12
+
+* Merged PR #5: Encode binary responses using base 64 - @thekid
+
 ## 1.0.3 / 2022-02-26
 
 * Made library compatible with `xp-forge/lambda` version 4.0.0
