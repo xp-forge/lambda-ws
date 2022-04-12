@@ -111,6 +111,29 @@ class HttpApiTest {
   }
 
   #[Test]
+  public function sending_redirect() {
+    $fixture= new class($this->environment) extends HttpApi {
+      public function routes($env) {
+        return ['/' => function($req, $res) {
+          $res->answer(302);
+          $res->header('Location', 'https://example.com');
+        }];
+      }
+    };
+
+    Assert::equals(
+      [
+        'statusCode'        => 302,
+        'statusDescription' => 'Found',
+        'isBase64Encoded'   => false,
+        'headers'           => ['Location' => 'https://example.com', 'Content-Length' => 0],
+        'body'              => null,
+      ],
+      $this->invoke($fixture->target(), 'GET')
+    );
+  }
+
+  #[Test]
   public function throwing_error() {
     $fixture= new class($this->environment) extends HttpApi {
       public function routes($env) {
