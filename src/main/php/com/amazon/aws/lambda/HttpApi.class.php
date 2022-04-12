@@ -52,6 +52,8 @@ abstract class HttpApi extends Handler {
       try {
         foreach ($routing->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
         $logging->log($req, $res);
+        $res->end();
+
         return $res->output()->document;
       } catch (Throwable $t) {
         $e= $t instanceof Error ? $t : new InternalServerError($t);
