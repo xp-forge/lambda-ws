@@ -3,6 +3,10 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 1.1.2 / 2022-09-06
+
+* Fixed issue #8: Cookies error in Lambda Function URLs - @thekid
+
 ## 1.1.1 / 2022-04-12
 
 * Merged PR #7: Fix redirects yielding "null" - @thekid
