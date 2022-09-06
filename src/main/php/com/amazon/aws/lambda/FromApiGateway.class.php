@@ -8,6 +8,7 @@ use web\io\{Input, Parts};
  * Input from Amazon AWS API Gateway version 2.0
  *
  * @test com.amazon.aws.lambda.unittest.FromApiGatewayTest
+ * @test com.amazon.aws.lambda.unittest.InvocationEventsTest
  * @see  https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
  */
 class FromApiGateway implements Input {
@@ -64,9 +65,9 @@ class FromApiGateway implements Input {
   public function headers() {
     yield 'remote-addr' => $this->event['requestContext']['http']['sourceIp'] ?? '127.0.0.1';
     yield from $this->event['headers'] ?? [];
-    if (!empty($this->event['cookies'])) {
-      yield 'cookie' => implode('; ', $this->event['cookies']);
-    }
+
+    if (isset($this->event['headers']['cookie']) || empty($this->event['cookies'])) return;
+    yield 'cookie' => implode('; ', $this->event['cookies']);
   }
 
   /** @return ?io.streams.InputStream */
