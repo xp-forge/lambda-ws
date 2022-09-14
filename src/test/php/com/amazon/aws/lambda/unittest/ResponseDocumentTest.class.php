@@ -106,6 +106,25 @@ class ResponseDocumentTest {
   }
 
   #[Test]
+  public function with_gzipped_content() {
+    $out= new ResponseDocument();
+    $out->begin(200, 'OK', ['Content-Type' => ['text/plain'], 'Content-Encoding' => ['gzip']]);
+    $out->write("x\234\vI-.\001\000\003\335\001\241");
+    $out->close();
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => true,
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Encoding' => 'gzip', 'Content-Length' => '12'],
+        'body'              => 'eJwLSS0uAQAD3QGh',
+      ],
+      $out->document
+    );
+  }
+
+  #[Test]
   public function write_to_stream() {
     $out= new ResponseDocument();
     $out->begin(200, 'OK', []);

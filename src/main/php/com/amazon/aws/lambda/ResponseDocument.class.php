@@ -49,9 +49,13 @@ class ResponseDocument extends Output {
       'body'              => null,
     ];
 
-    // If no content type is given or it's definitely text, pass through
-    // content without encoding to base64 to be more efficient.
-    if (!isset($headers['Content-Type']) || $this->isText($headers['Content-Type'][0])) {
+    // If no content type is given or it's definitely (unencoded) text, pass
+    // through content without encoding to base64 to be more efficient.
+    //
+    // Note: It's not necessary to check for `identity`, this is only valid
+    // in `Accept-Encoding`, see https://github.com/mdn/content/issues/1964
+    $mime= $headers['Content-Type'][0] ?? null;
+    if (null === $mime || !isset($headers['Content-Encoding']) && $this->isText($mime)) {
       $this->document['isBase64Encoded']= false;
     }
 

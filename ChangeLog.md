@@ -3,6 +3,12 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 1.1.3 / 2022-10-14
+
+* Fixed responses with `Content-Encoding: gzip` (*or `br`*) not being
+  base64-encoded. This leads to unparseable lambda responses.
+  (@thekid)
+
 ## 1.1.2 / 2022-09-06
 
 * Fixed issue #8: Cookies error in Lambda Function URLs - @thekid
