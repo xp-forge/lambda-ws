@@ -3,6 +3,8 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #9: Migrate to new testing library - @thekid
+
 ## 1.1.3 / 2022-10-14
 
 * Fixed responses with `Content-Encoding: gzip` (*or `br`*) not being
