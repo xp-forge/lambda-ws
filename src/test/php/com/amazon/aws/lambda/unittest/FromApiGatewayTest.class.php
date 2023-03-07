@@ -3,7 +3,7 @@
 use com\amazon\aws\lambda\FromApiGateway;
 use io\streams\Streams;
 use lang\IllegalArgumentException;
-use unittest\{Assert, Test, Values};
+use test\{Assert, Expect, Test, Values};
 use util\Bytes;
 use web\io\Part;
 
@@ -48,12 +48,12 @@ class FromApiGatewayTest {
     $this->fixture();
   }
 
-  #[Test, Expect(class: IllegalArgumentException::class, withMessage: '/Cannot handle API gateway without version/')]
+  #[Test, Expect(class: IllegalArgumentException::class, message: '/Cannot handle API gateway without version/')]
   public function cannot_create_without_version() {
     new FromApiGateway([]);
   }
 
-  #[Test, Expect(class: IllegalArgumentException::class, withMessage: '/Cannot handle API gateway version 1.0/')]
+  #[Test, Expect(class: IllegalArgumentException::class, message: '/Cannot handle API gateway version 1.0/')]
   public function cannot_create_with_version1() {
     new FromApiGateway(['version' => '1.0']);
   }

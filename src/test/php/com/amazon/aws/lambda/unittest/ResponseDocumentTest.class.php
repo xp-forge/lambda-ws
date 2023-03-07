@@ -1,7 +1,7 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
 use com\amazon\aws\lambda\ResponseDocument;
-use unittest\{Assert, Test, Values};
+use test\{Assert, Test, Values};
 use web\Error;
 
 class ResponseDocumentTest {

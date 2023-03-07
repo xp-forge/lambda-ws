@@ -1,7 +1,7 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
 use com\amazon\aws\lambda\RequestContext;
-use unittest\{Assert, Test};
+use test\{Assert, Test};
 
 class RequestContextTest {
   const CONTEXT = [
