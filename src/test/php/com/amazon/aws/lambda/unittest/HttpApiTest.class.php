@@ -1,9 +1,9 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
-use com\amazon\aws\lambda\{HttpApi, Environment, Context};
-use io\streams\{StringWriter, MemoryOutputStream};
+use com\amazon\aws\lambda\{Context, Environment, HttpApi};
+use io\streams\{MemoryOutputStream, StringWriter};
 use lang\MethodNotImplementedException;
-use unittest\{Assert, Before, Test, Values};
+use test\{Assert, Before, Test, Values};
 use web\{Application, Cookie, Error};
 
 class HttpApiTest {
