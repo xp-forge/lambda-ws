@@ -6,6 +6,7 @@ use web\io\Output;
  * Response document
  *
  * @test  com.amazon.aws.lambda.unittest.ResponseDocumentTest
+ * @see   https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
  */
 class ResponseDocument extends Output {
   public $document;
@@ -97,7 +98,10 @@ class ResponseDocument extends Output {
 
   /** @return void */
   public function finish() {
-    if (null === $this->document['body']) return;
+    if (null === $this->document['body']) {
+      unset($this->document['body']);
+      return;
+    }
 
     // Report unencoded length in headers
     $this->document['headers']['Content-Length']= (string)strlen($this->document['body']);

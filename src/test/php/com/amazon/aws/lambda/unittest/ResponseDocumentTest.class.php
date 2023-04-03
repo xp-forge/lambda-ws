@@ -23,7 +23,6 @@ class ResponseDocumentTest {
         'statusDescription' => 'No Content',
         'isBase64Encoded'   => false,
         'headers'           => [],
-        'body'              => null,
       ],
       $out->document
     );

@@ -127,7 +127,6 @@ class HttpApiTest {
         'statusDescription' => 'Found',
         'isBase64Encoded'   => false,
         'headers'           => ['Location' => 'https://example.com', 'Content-Length' => 0],
-        'body'              => null,
       ],
       $this->invoke($fixture->target(), 'GET')
     );

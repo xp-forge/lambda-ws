@@ -3,6 +3,11 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 1.1.4 / 2023-04-03
+
+* Fixed case with the string "null" being sent back when using streaming
+  and never writing to the response stream by removing response `body`
+  (@thekid)
 * Merged PR #9: Migrate to new testing library - @thekid
 
 ## 1.1.3 / 2022-10-14
