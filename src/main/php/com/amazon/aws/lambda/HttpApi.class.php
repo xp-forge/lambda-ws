@@ -8,6 +8,7 @@ use web\{Application, Environment, Error, InternalServerError, Request, Response
  *
  * @test com.amazon.aws.lambda.unittest.HttpApiTest
  * @see  https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html
+ * @see  https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-features.html#gettingstarted-features-urls
  */
 abstract class HttpApi extends Handler {
 
