@@ -12,15 +12,7 @@ use web\{Application, Environment, Error, InternalServerError, Request, Response
  */
 abstract class ApiGateway extends HttpApi {
 
-  /**
-   * Returns routes. Overwrite this in subclasses!
-   * 
-   * @param  web.Environment $environment
-   * @return web.Application|web.Routing|[:var]
-   */
-  public abstract function routes($environment);
-
-  /** @return com.amazon.aws.lambda.Lambda|callable */
+  /** @return callable|com.amazon.aws.lambda.Lambda|com.amazon.aws.lambda.Streaming */
   public function target() {
     $routing= $this->routing();
 

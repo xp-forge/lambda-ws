@@ -12,7 +12,7 @@ use web\{Application, Environment, Error, InternalServerError, Request, Response
  */
 abstract class HttpIntegration extends HttpApi {
 
-  /** @return com.amazon.aws.lambda.Lambda|callable */
+  /** @return callable|com.amazon.aws.lambda.Lambda|com.amazon.aws.lambda.Streaming */
   public function target() {
     $routing= $this->routing();
 
