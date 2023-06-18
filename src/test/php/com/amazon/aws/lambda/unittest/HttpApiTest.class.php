@@ -1,13 +1,13 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
-use com\amazon\aws\lambda\{Context, Environment, HttpApi};
+use com\amazon\aws\lambda\{Context, Environment, HttpApi, Stream, StreamingTo};
 use io\streams\{MemoryOutputStream, StringWriter};
 use lang\MethodNotImplementedException;
 use test\{Assert, Before, Test, Values};
 use web\{Application, Cookie, Error};
 
 class HttpApiTest {
-  private $context, $environment, $trace;
+  private $context, $environment, $stream, $trace;
 
   /** Returns a new event */
   private function invoke($target, $method= 'GET', $query= '', $headers= [], $body= null) {
@@ -43,7 +43,29 @@ class HttpApiTest {
     // Reset trace to beginning
     $this->trace->truncate(0);
     $this->trace->seek(0);
-    return $target($event, $this->context);
+
+    // Stream calls
+    $stream= new class() implements Stream {
+      public $mime= null;
+      public $written= '';
+
+      public function unmarshal() {
+        $p= strpos($this->written, StreamingTo::DELIMITER);
+        return [
+          'meta' => json_decode(substr($this->written, 0, $p), true),
+          'body' => substr($this->written, $p + strlen(StreamingTo::DELIMITER))
+        ];
+      }
+
+      public function transmit($source, $mimeType= null) { /* Untested */ }
+      public function use($mimeType) { $this->mime.= $mimeType; }
+      public function write($bytes) { $this->written.= $bytes; }
+      public function end() { /* NOOP */ }
+      public function flush() { /* NOOP */ }
+      public function close() { /* NOOP */ }
+    };
+    $target($event, $stream, $this->context);
+    return $stream;
   }
 
   #[Before]
@@ -73,13 +95,14 @@ class HttpApiTest {
 
     Assert::equals(
       [
-        'statusCode'        => 200,
-        'statusDescription' => 'OK',
-        'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '10'],
-        'body'              => 'Hello Test',
+        'meta' => [
+          'statusCode'        => 200,
+          'statusDescription' => 'OK',
+          'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => 10],
+        ],
+        'body' => 'Hello Test',
       ],
-      $this->invoke($fixture->target(), 'GET', 'name=Test')
+      $this->invoke($fixture->target(), 'GET', 'name=Test')->unmarshal()
     );
   }
 
@@ -100,13 +123,14 @@ class HttpApiTest {
 
     Assert::equals(
       [
-        'statusCode'        => 200,
-        'statusDescription' => 'OK',
-        'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '10'],
-        'body'              => 'Hello Test',
+        'meta' => [
+          'statusCode'        => 200,
+          'statusDescription' => 'OK',
+          'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => 10],
+        ],
+        'body' => 'Hello Test',
       ],
-      $this->invoke($fixture->target(), 'GET', 'name=Test')
+      $this->invoke($fixture->target(), 'GET', 'name=Test')->unmarshal()
     );
   }
 
@@ -123,12 +147,14 @@ class HttpApiTest {
 
     Assert::equals(
       [
-        'statusCode'        => 302,
-        'statusDescription' => 'Found',
-        'isBase64Encoded'   => false,
-        'headers'           => ['Location' => 'https://example.com', 'Content-Length' => 0],
+        'meta' => [
+          'statusCode'        => 302,
+          'statusDescription' => 'Found',
+          'headers'           => ['Location' => 'https://example.com', 'Content-Length' => 0],
+        ],
+        'body' => '',
       ],
-      $this->invoke($fixture->target(), 'GET')
+      $this->invoke($fixture->target(), 'GET')->unmarshal()
     );
   }
 
@@ -144,13 +170,18 @@ class HttpApiTest {
 
     Assert::equals(
       [
-        'statusCode'        => 404,
-        'statusDescription' => 'Not Found',
-        'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => 'text/plain', 'x-amzn-ErrorType' => 'web.Error'],
+        'meta' => [
+          'statusCode'        => 404,
+          'statusDescription' => 'Not Found',
+          'headers'           => [
+            'Content-Type'     => 'text/plain',
+            'Content-Length'   => 32,
+            'x-amzn-ErrorType' => 'web.Error'
+          ],
+        ],
         'body'              => 'Error web.Error(#404: Not Found)',
       ],
-      $this->invoke($fixture->target(), 'GET')
+      $this->invoke($fixture->target(), 'GET')->unmarshal()
     );
   }
 
@@ -166,13 +197,18 @@ class HttpApiTest {
 
     Assert::equals(
       [
-        'statusCode'        => 500,
-        'statusDescription' => 'Not implemented',
-        'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => 'text/plain', 'x-amzn-ErrorType' => 'web.InternalServerError'],
+        'meta' => [
+          'statusCode'        => 500,
+          'statusDescription' => 'Not implemented',
+          'headers'           => [
+            'Content-Type'     => 'text/plain',
+            'Content-Length'   => 52,
+            'x-amzn-ErrorType' => 'web.InternalServerError'
+          ],
+        ],
         'body'              => 'Error web.InternalServerError(#500: Not implemented)',
       ],
-      $this->invoke($fixture->target(), 'GET')
+      $this->invoke($fixture->target(), 'GET')->unmarshal()
     );
   }
 
@@ -189,13 +225,14 @@ class HttpApiTest {
 
     Assert::equals(
       [
-        'statusCode'        => 200,
-        'statusDescription' => 'OK',
-        'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '26'],
-        'body'              => 'Hello Test from r3pmxmplak',
+        'meta' => [
+          'statusCode'        => 200,
+          'statusDescription' => 'OK',
+          'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => 26],
+        ],
+        'body' => 'Hello Test from r3pmxmplak',
       ],
-      $this->invoke($fixture->target(), 'GET', 'name=Test')
+      $this->invoke($fixture->target(), 'GET', 'name=Test')->unmarshal()
     );
   }
 
@@ -212,13 +249,14 @@ class HttpApiTest {
 
     Assert::equals(
       [
-        'statusCode'        => 200,
-        'statusDescription' => 'OK',
-        'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '65'],
+        'meta' => [
+          'statusCode'        => 200,
+          'statusDescription' => 'OK',
+          'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => 65],
+        ],
         'body'              => 'Hello Test from arn:aws:lambda:us-east-1:1185465369:function:test',
       ],
-      $this->invoke($fixture->target(), 'GET', 'name=Test')
+      $this->invoke($fixture->target(), 'GET', 'name=Test')->unmarshal()
     );
   }
 
@@ -237,13 +275,14 @@ class HttpApiTest {
 
     Assert::equals(
       [
-        'statusCode'        => 200,
-        'statusDescription' => 'OK',
-        'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '65'],
+        'meta' => [
+          'statusCode'        => 200,
+          'statusDescription' => 'OK',
+          'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => 65],
+        ],
         'body'              => 'Hello Test from arn:aws:lambda:us-east-1:1185465369:function:test',
       ],
-      $this->invoke($fixture->target(), 'GET', 'name=Test')
+      $this->invoke($fixture->target(), 'GET', 'name=Test')->unmarshal()
     );
   }
 
@@ -263,14 +302,32 @@ class HttpApiTest {
 
     Assert::equals(
       [
-        'statusCode'        => 200,
-        'statusDescription' => 'OK',
-        'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => '65'],
-        'cookies'           => ['name=Test; SameSite=Lax; HttpOnly'],
+        'meta' => [
+          'statusCode'        => 200,
+          'statusDescription' => 'OK',
+          'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => 65],
+          'cookies'           => ['name=Test; SameSite=Lax; HttpOnly'],
+        ],
         'body'              => 'Hello Test from arn:aws:lambda:us-east-1:1185465369:function:test',
       ],
-      $this->invoke($fixture->target(), 'GET', 'name=Test')
+      $this->invoke($fixture->target(), 'GET', 'name=Test')->unmarshal()
+    );
+  }
+
+  #[Test]
+  public function sets_awslambda_http_integration_response_vendor_mimetype() {
+    $fixture= new class($this->environment) extends HttpApi {
+      public function routes($env) {
+        return ['/' => function($req, $res) {
+          $res->answer(200);
+          $res->send('Hello '.$req->param('name'), 'text/plain');
+        }];
+      }
+    };
+
+    Assert::equals(
+      StreamingTo::MIME_TYPE,
+      $this->invoke($fixture->target(), 'GET', 'name=Test')->mime
     );
   }
 

@@ -44,21 +44,23 @@ abstract class HttpApi extends Handler {
     )));
 
     // Return event handler
-    return function($event, $context) use($routing, $logging) {
+    return function($event, $stream, $context) use($routing, $logging) {
       $in= new FromApiGateway($event);
       $req= new Request($in);
-      $res= new Response(new ResponseDocument());
+      $res= new Response(new StreamingTo($stream));
 
       try {
         foreach ($routing->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
         $logging->log($req, $res);
-        $res->end();
 
-        return $res->output()->document;
+        $res->end();
       } catch (Throwable $t) {
         $e= $t instanceof Error ? $t : new InternalServerError($t);
         $logging->log($req, $res, $e);
-        return $res->output()->error($e);
+
+        $res->answer($e->status(), $e->getMessage());
+        $res->header('x-amzn-ErrorType', nameof($e));
+        $res->send($e->compoundMessage(), 'text/plain');
       }
     };
   }
