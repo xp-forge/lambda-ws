@@ -12,6 +12,7 @@ use web\io\Output;
 class StreamingTo extends Output {
   const DELIMITER= "\0\0\0\0\0\0\0\0";
   const MIME_TYPE= 'application/vnd.awslambda.http-integration-response';
+  const USESTREAM= 'Must use RESPONSE_STREAM';
 
   private $stream;
 
@@ -36,6 +37,7 @@ class StreamingTo extends Output {
       'statusCode'        => $status,
       'statusDescription' => $message,
       'headers'           => [],
+      'body'              => self::USESTREAM,
     ];
     foreach ($headers as $name => $values) {
       if ('Set-Cookie' === $name) {

@@ -44,24 +44,32 @@ class HttpApiTest {
     $this->trace->truncate(0);
     $this->trace->seek(0);
 
-    // Stream calls
+    // Stream calls to testing stream, then return this stream
     $stream= new class() implements Stream {
       public $mime= null;
-      public $written= '';
+      private $bytes= '';
 
-      public function unmarshal() {
-        $p= strpos($this->written, StreamingTo::DELIMITER);
+      public function unmarshal($full= false) {
+        $p= strpos($this->bytes, StreamingTo::DELIMITER);
+        $meta= json_decode(substr($this->bytes, 0, $p), true);
+        if (!$full) unset($meta['body']);
+
         return [
-          'meta' => json_decode(substr($this->written, 0, $p), true),
-          'body' => substr($this->written, $p + strlen(StreamingTo::DELIMITER))
+          'meta' => $meta,
+          'body' => substr($this->bytes, $p + strlen(StreamingTo::DELIMITER))
         ];
       }
 
       public function transmit($source, $mimeType= null) { /* Untested */ }
+
       public function use($mimeType) { $this->mime.= $mimeType; }
-      public function write($bytes) { $this->written.= $bytes; }
+
+      public function write($bytes) { $this->bytes.= $bytes; }
+
       public function end() { /* NOOP */ }
+
       public function flush() { /* NOOP */ }
+
       public function close() { /* NOOP */ }
     };
     $target($event, $stream, $this->context);
@@ -328,6 +336,23 @@ class HttpApiTest {
     Assert::equals(
       StreamingTo::MIME_TYPE,
       $this->invoke($fixture->target(), 'GET', 'name=Test')->mime
+    );
+  }
+
+  #[Test]
+  public function adds_must_use_streaming_hint() {
+    $fixture= new class($this->environment) extends HttpApi {
+      public function routes($env) {
+        return ['/' => function($req, $res) {
+          $res->answer(200);
+          $res->send('Hello '.$req->param('name'), 'text/plain');
+        }];
+      }
+    };
+
+    Assert::equals(
+      StreamingTo::USESTREAM,
+      $this->invoke($fixture->target(), 'GET', 'name=Test')->unmarshal(true)['meta']['body']
     );
   }
 
