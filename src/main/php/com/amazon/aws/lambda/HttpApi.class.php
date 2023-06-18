@@ -1,7 +1,7 @@
 <?php namespace com\amazon\aws\lambda;
 
 use Throwable;
-use web\{Application, Environment, Error, InternalServerError, Logging, Request, Response, Routing};
+use web\{Application, Environment, Error, InternalServerError, Request, Response, Routing};
 
 /**
  * AWS Lambda with Amazon HTTP API Gateway
@@ -21,19 +21,7 @@ abstract class HttpApi extends Handler {
 
   /** @return com.amazon.aws.lambda.Lambda|callable */
   public function target() {
-    $logging= Logging::of(function($request, $response, $error= null) {
-      $query= $request->uri()->query();
-      $this->environment->trace(sprintf(
-        'TRACE [%s] %d %s %s %s',
-        $request->value('context')->traceId,
-        $response->status(),
-        $request->method(),
-        $request->uri()->path().($query ? '?'.$query : ''),
-        $error ? $error->toString() : ''
-      ));
-    });
-
-    // Determine routing
+    $logging= new Tracing($this->environment);
     $routing= Routing::cast($this->routes(new Environment(
       getenv('PROFILE') ?: 'prod',
       $this->environment->root,
