@@ -1,12 +1,12 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
-use com\amazon\aws\lambda\{Context, Environment, HttpApi, Stream, StreamingTo};
+use com\amazon\aws\lambda\{Context, Environment, HttpIntegration, Stream, StreamingTo};
 use io\streams\{MemoryOutputStream, StringWriter};
 use lang\MethodNotImplementedException;
 use test\{Assert, Before, Test, Values};
 use web\{Application, Cookie, Error};
 
-class HttpApiTest {
+class HttpIntegrationTest {
   private $context, $environment, $stream, $trace;
 
   /** Returns a new event */
@@ -92,7 +92,7 @@ class HttpApiTest {
 
   #[Test]
   public function with_handler_function() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $res->answer(200);
@@ -116,7 +116,7 @@ class HttpApiTest {
 
   #[Test]
   public function with_web_application() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return new class($env) extends Application {
           public function routes() {
@@ -144,7 +144,7 @@ class HttpApiTest {
 
   #[Test]
   public function sending_redirect() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $res->answer(302);
@@ -168,7 +168,7 @@ class HttpApiTest {
 
   #[Test]
   public function throwing_error() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           throw new Error(404, 'Not Found');
@@ -195,7 +195,7 @@ class HttpApiTest {
 
   #[Test]
   public function throwing_exception() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           throw new MethodNotImplementedException('Not implemented', '/');
@@ -222,7 +222,7 @@ class HttpApiTest {
 
   #[Test]
   public function has_access_to_request() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $res->answer(200);
@@ -246,7 +246,7 @@ class HttpApiTest {
 
   #[Test]
   public function has_access_to_context() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $res->answer(200);
@@ -270,7 +270,7 @@ class HttpApiTest {
 
   #[Test]
   public function reads_cookies() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $name= $req->cookie('name');
@@ -296,7 +296,7 @@ class HttpApiTest {
 
   #[Test]
   public function sets_cookies() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $name= $req->param('name');
@@ -324,7 +324,7 @@ class HttpApiTest {
 
   #[Test]
   public function sets_awslambda_http_integration_response_vendor_mimetype() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $res->answer(200);
@@ -341,7 +341,7 @@ class HttpApiTest {
 
   #[Test]
   public function adds_must_use_streaming_hint() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $res->answer(200);
@@ -358,7 +358,7 @@ class HttpApiTest {
 
   #[Test]
   public function writes_trace_message() {
-    $fixture= new class($this->environment) extends HttpApi {
+    $fixture= new class($this->environment) extends HttpIntegration {
       public function routes($env) {
         return ['/' => function($req, $res) {
           $res->answer(200);
