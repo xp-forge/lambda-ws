@@ -4,10 +4,11 @@ use Throwable;
 use web\{Application, Environment, Error, InternalServerError, Request, Response, Routing};
 
 /**
- * AWS Lambda with Amazon HTTP API Gateway
+ * AWS Lambda with AWS function URLs. Uses streaming as this has lower
+ * TTFB and memory consumption.
  *
  * @test com.amazon.aws.lambda.unittest.HttpApiTest
- * @see  https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html
+ * @see  https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html
  * @see  https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-features.html#gettingstarted-features-urls
  */
 abstract class HttpApi extends Handler {
