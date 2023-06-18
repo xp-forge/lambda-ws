@@ -7,7 +7,7 @@ use web\{Routing, Environment as WebEnv};
  * Base class for HTTP APIs with the following implementations:
  *
  * - `HttpIntegration` for Lambda function URLs with streaming support
- * - `ApiGateway` for HTTP and REST API Gateway
+ * - `ApiGateway` for API Gateway and function URLs with buffering
  *
  * @see  https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html
  */
