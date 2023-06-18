@@ -1,7 +1,7 @@
 <?php namespace com\amazon\aws\lambda;
 
 use Throwable;
-use web\{Application, Environment, Error, InternalServerError, Request, Response, Routing};
+use web\{Error, InternalServerError, Request, Response};
 
 /**
  * AWS Lambda with Amazon HTTP API Gateway. Uses buffering as streamed responses
