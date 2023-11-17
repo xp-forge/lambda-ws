@@ -3,6 +3,11 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 1.2.0 / 2023-10-15
+
+* Made this library compatible with `xp-forge/lambda` 5.0.0 - @thekid
+* Added PHP 8.4 to the test matrix - @thekid
+
 ## 1.1.4 / 2023-04-03
 
 * Fixed case with the string "null" being sent back when using streaming
