@@ -55,7 +55,7 @@ class Ws extends Application {
         'domainPrefix' => 'x17bf9mIws',
         'requestId'    => 'JKJaXmPLvHcESHA=',
         'routeKey'     => "ANY /{$function}-function-1G3XMPLZXVXYI",
-        'stage'        => 'default',
+        'stage'        => '$default',
         'timeEpoch'    => time() * 1000,
         'http'         => [
           'method'    => $req->method(),
@@ -65,6 +65,10 @@ class Ws extends Application {
           'userAgent' => $req->header('User-Agent'),
         ]
       ]);
+
+      // Add response headers replicating the inconsistent casing AWS uses
+      $res->header('x-amzn-RequestId', $context->awsRequestId);
+      $res->header('X-Amzn-Trace-Id', $context->traceId);
       return $inv->proceed($req->pass('context', $context)->pass('request', $via), $res);
     };
 
