@@ -44,7 +44,24 @@ class Greet extends HttpApi {
 
 The request context is passed into a request value named *request* and contains a [RequestContext instance](https://github.com/xp-forge/lambda-ws#request-context). The [lambda context](https://github.com/xp-forge/lambda#context) is passed in *context*.
 
-To run existing web applications, return an instance of your application subclass from the *routes()* method. This way, you can also test them locally using the `xp web` command.
+To run existing web applications, return an instance of your `web.Application` subclass from the *routes()* method. 
+
+Development & testing
+---------------------
+To run the HTTP APIs locally, this library integrates with [xp-forge/web](https://github.com/xp-forge/web) via a wrapper:
+
+```bash
+$ xp web com.amazon.aws.lambda.Ws Greet
+@xp.web.srv.Standalone(HTTP @ peer.ServerSocket(Resource id #124 -> tcp://127.0.0.1:8080))
+Serving prod:Lambda<Greet>[] > web.logging.ToConsole
+════════════════════════════════════════════════════════════════════════
+> Server started: http://localhost:8080 in 0.057 seconds
+  Sat, 18 Nov 2023 12:19:32 +0100 - PID 18668; press Ctrl+C to exit
+
+# ...
+```
+
+By adding `-m develop`, these can be run in the development webserver.
 
 Setup and deployment
 --------------------
