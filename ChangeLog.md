@@ -3,6 +3,12 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 1.3.0 / 2023-11-20
+
+* Merged PR #11: Run lambda HTTP APIs via `xp web lambda [class]`. This
+  requires https://github.com/xp-forge/web/releases/tag/v3.10.0
+  (@thekid)
+
 ## 1.2.0 / 2023-10-15
 
 * Made this library compatible with `xp-forge/lambda` 5.0.0 - @thekid
