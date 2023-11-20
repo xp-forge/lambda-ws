@@ -51,7 +51,7 @@ Development & testing
 To run the HTTP APIs locally, this library integrates with [xp-forge/web](https://github.com/xp-forge/web) via a wrapper:
 
 ```bash
-$ xp web com.amazon.aws.lambda.Ws Greet
+$ xp web lambda Greet
 @xp.web.srv.Standalone(HTTP @ peer.ServerSocket(Resource id #124 -> tcp://127.0.0.1:8080))
 Serving prod:Lambda<Greet>[] > web.logging.ToConsole
 ════════════════════════════════════════════════════════════════════════
