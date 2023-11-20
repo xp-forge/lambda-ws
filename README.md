@@ -106,6 +106,29 @@ $ aws lambda update-function-code \
   --publish
 ```
 
+Streaming
+---------
+This library implements HTTP response streaming, improving TTFB and memory consumption of web applications. Response streaming is available for lambda function URLs which have their invoke mode set to *RESPONSE_STREAM*.
+
+Inherit from the *HttpStreaming* base class instead of *HttpApi*:
+
+```php
+use com\amazon\aws\lambda\HttpStreaming;
+
+class Greet extends HttpStreaming {
+
+  public function routes($env) {
+    /* Shortened for brevity */
+  }
+}
+```
+
+Next, deploy the change, then update the function configuration:
+
+```bash
+$ aws lambda update-function-url-config --function-name greet --invoke-mode RESPONSE_STREAM
+```
+
 Request context
 ---------------
 The request context passed via the *request* value is defined as follows:
