@@ -108,7 +108,7 @@ $ aws lambda update-function-code \
 
 Streaming
 ---------
-This library implements HTTP response streaming, improving TTFB and memory consumption of web applications. Response streaming is available for lambda function URLs which have their invoke mode set to *RESPONSE_STREAM*.
+This library implements HTTP response streaming as [announced by AWS in April 2023](https://aws.amazon.com/de/blogs/compute/introducing-aws-lambda-response-streaming/), improving TTFB and memory consumption of web applications. Response streaming is available for lambda function URLs which have their invoke mode set to *RESPONSE_STREAM*.
 
 Inherit from the *HttpStreaming* base class instead of *HttpApi*:
 
