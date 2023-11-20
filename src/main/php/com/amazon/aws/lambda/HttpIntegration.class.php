@@ -38,7 +38,4 @@ abstract class HttpIntegration extends Handler {
       $this->tracing
     )));
   }
-
-  /** @return callable|com.amazon.aws.lambda.Lambda|com.amazon.aws.lambda.Streaming */
-  public abstract function target();
 }
