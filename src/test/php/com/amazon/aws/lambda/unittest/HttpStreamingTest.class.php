@@ -1,9 +1,9 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
-use com\amazon\aws\lambda\{HttpIntegration, Stream, StreamingTo};
+use com\amazon\aws\lambda\{HttpStreaming, Stream, StreamingTo};
 use test\{Assert, Test};
 
-class HttpIntegrationTest extends InvocationTest {
+class HttpStreamingTest extends InvocationTest {
 
   /**
    * Stream calls to testing stream, then return this stream
@@ -41,7 +41,7 @@ class HttpIntegrationTest extends InvocationTest {
       public function close() { /* NOOP */ }
     };
 
-    $integration= new class($this->environment, $routes) extends HttpIntegration {
+    $integration= new class($this->environment, $routes) extends HttpStreaming {
       private $routes;
 
       public function __construct($environment, $routes) {

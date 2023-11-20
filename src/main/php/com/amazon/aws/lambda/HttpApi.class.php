@@ -1,47 +1,38 @@
 <?php namespace com\amazon\aws\lambda;
 
-use lang\MethodNotImplementedException;
-use web\{Routing, Environment as WebEnv};
+use Throwable;
+use web\{Error, InternalServerError, Request, Response};
 
 /**
- * Base class for HTTP APIs with the following implementations:
+ * AWS Lambda with Amazon HTTP API Gateway. Uses buffering as streamed responses
+ * are not supported by API Gateway's LAMBDA_PROXY integration
  *
- * - `HttpIntegration` for Lambda function URLs with streaming support
- * - `ApiGateway` for API Gateway and function URLs with buffering
- *
- * @see  https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html
+ * @test com.amazon.aws.lambda.unittest.HttpApiTest
+ * @see  https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html
  */
-abstract class HttpApi extends Handler {
-  protected $tracing;
-
-  /** Creates a new handler with a given lambda environment */
-  public function __construct(Environment $environment) {
-    parent::__construct($environment);
-    $this->tracing= new Tracing($environment);
-  }
-
-  /**
-   * Returns routes. Overwrite this in subclasses!
-   * 
-   * @param  web.Environment $environment
-   * @return web.Application|web.Routing|[:var]
-   */
-  public abstract function routes($environment);
-
-  /** @return web.Routing */
-  protected final function routing() {
-    return Routing::cast($this->routes(new WebEnv(
-      $this->environment->variable('PROFILE') ?? 'prod',
-      $this->environment->root,
-      $this->environment->path('static'),
-      [$this->environment->properties],
-      [],
-      $this->tracing
-    )));
-  }
+abstract class HttpApi extends HttpIntegration {
 
   /** @return callable|com.amazon.aws.lambda.Lambda|com.amazon.aws.lambda.Streaming */
   public function target() {
-    throw new MethodNotImplementedException('Extend either HttpIntegration or ApiGateway', __FUNCTION__);
+    $routing= $this->routing();
+
+    // Return event handler
+    return function($event, $context) use($routing) {
+      $in= new FromApiGateway($event);
+      $req= new Request($in);
+      $res= new Response(new ResponseDocument());
+
+      try {
+        foreach ($routing->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
+        $this->tracing->log($req, $res);
+        $res->end();
+
+        return $res->output()->document;
+      } catch (Throwable $t) {
+        $e= $t instanceof Error ? $t : new InternalServerError($t);
+        $this->tracing->log($req, $res, $e);
+        return $res->output()->error($e);
+      }
+    };
   }
 }

@@ -1,40 +1,44 @@
 <?php namespace com\amazon\aws\lambda;
 
-use Throwable;
-use web\{Error, InternalServerError, Request, Response};
+use web\{Routing, Environment as WebEnv};
 
 /**
- * AWS Lambda with AWS function URLs. Uses streaming as this has lower
- * TTFB and memory consumption.
+ * Base class for HTTP APIs with the following implementations:
  *
- * @test com.amazon.aws.lambda.unittest.HttpIntegrationTest
- * @see  https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-features.html#gettingstarted-features-urls
+ * - `HttpStreaming` for Lambda function URLs with streaming support
+ * - `HttpApi` for API Gateway and function URLs with buffering
+ *
+ * @see  https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html
  */
-abstract class HttpIntegration extends HttpApi {
+abstract class HttpIntegration extends Handler {
+  protected $tracing;
+
+  /** Creates a new handler with a given lambda environment */
+  public function __construct(Environment $environment) {
+    parent::__construct($environment);
+    $this->tracing= new Tracing($environment);
+  }
+
+  /**
+   * Returns routes. Overwrite this in subclasses!
+   * 
+   * @param  web.Environment $environment
+   * @return web.Application|web.Routing|[:var]
+   */
+  public abstract function routes($environment);
+
+  /** @return web.Routing */
+  protected final function routing() {
+    return Routing::cast($this->routes(new WebEnv(
+      $this->environment->variable('PROFILE') ?? 'prod',
+      $this->environment->root,
+      $this->environment->path('static'),
+      [$this->environment->properties],
+      [],
+      $this->tracing
+    )));
+  }
 
   /** @return callable|com.amazon.aws.lambda.Lambda|com.amazon.aws.lambda.Streaming */
-  public function target() {
-    $routing= $this->routing();
-
-    // Return event handler
-    return function($event, $stream, $context) use($routing) {
-      $in= new FromApiGateway($event);
-      $req= new Request($in);
-      $res= new Response(new StreamingTo($stream));
-
-      try {
-        foreach ($routing->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
-        $this->tracing->log($req, $res);
-
-        $res->end();
-      } catch (Throwable $t) {
-        $e= $t instanceof Error ? $t : new InternalServerError($t);
-        $this->tracing->log($req, $res, $e);
-
-        $res->answer($e->status(), $e->getMessage());
-        $res->header('x-amzn-ErrorType', nameof($e));
-        $res->send($e->compoundMessage(), 'text/plain');
-      }
-    };
-  }
+  public abstract function target();
 }

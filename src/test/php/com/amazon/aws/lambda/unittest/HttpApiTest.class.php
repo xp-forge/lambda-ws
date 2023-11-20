@@ -1,8 +1,8 @@
 <?php namespace com\amazon\aws\lambda\unittest;
 
-use com\amazon\aws\lambda\ApiGateway;
+use com\amazon\aws\lambda\HttpApi;
 
-class ApiGatewayTest extends InvocationTest {
+class HttpApiTest extends InvocationTest {
 
   /**
    * Performs invocation of a given target
@@ -12,7 +12,7 @@ class ApiGatewayTest extends InvocationTest {
    * @return var
    */
   protected function invocation($routes, $event) {
-    $integration= new class($this->environment, $routes) extends ApiGateway {
+    $integration= new class($this->environment, $routes) extends HttpApi {
       private $routes;
 
       public function __construct($environment, $routes) {
