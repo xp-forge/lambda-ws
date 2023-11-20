@@ -1,12 +1,13 @@
-<?php namespace com\amazon\aws\lambda;
+<?php namespace xp\lambda;
 
+use com\amazon\aws\lambda\{Context, Environment, RequestContext};
 use lang\{XPClass, IllegalArgumentException};
 use util\UUID;
 use util\cmd\Console;
 use web\{Application, Filters};
 
 /** Runs lambda HTTP APIs via `xp web com.amazon.aws.lambda.Ws [class]` */
-class Ws extends Application {
+class Web extends Application {
   const TRACE= 'Root=1-5bef4de7-ad49b0e87f6ef6c87fc2e700;Parent=9a9197af755a6419;Sampled=1';
   const REGION= 'test-local-1';
 
@@ -80,6 +81,6 @@ class Ws extends Application {
 
   /** @return string */
   public function toString() {
-    return 'Lambda<'.$this->app->getName().'>';
+    return nameof($this).'<'.$this->app->getName().'>';
   }
 }
