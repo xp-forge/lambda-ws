@@ -3,7 +3,7 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
-## 2.0.0 / ????-??-??
+## 2.0.0 / 2023-11-20
 
 * **Heads up:** Dropped support for XP <= 9, see xp-framework/rfc#341
   (@thekid)
