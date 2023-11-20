@@ -4,34 +4,36 @@ use Throwable;
 use web\{Error, InternalServerError, Request, Response};
 
 /**
- * AWS Lambda with Amazon HTTP API Gateway. Uses buffering as streamed responses
- * are not supported by API Gateway's LAMBDA_PROXY integration
+ * AWS Lambda with AWS function URLs. Uses streaming as this has lower
+ * TTFB and memory consumption.
  *
- * @test com.amazon.aws.lambda.unittest.HttpApiTest
- * @see  https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html
+ * @test com.amazon.aws.lambda.unittest.HttpIntegrationTest
+ * @see  https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-features.html#gettingstarted-features-urls
  */
-abstract class HttpApi extends HttpIntegration {
+abstract class HttpStreaming extends HttpIntegration {
 
   /** @return callable|com.amazon.aws.lambda.Lambda|com.amazon.aws.lambda.Streaming */
   public function target() {
     $routing= $this->routing();
 
     // Return event handler
-    return function($event, $context) use($routing) {
+    return function($event, $stream, $context) use($routing) {
       $in= new FromApiGateway($event);
       $req= new Request($in);
-      $res= new Response(new ResponseDocument());
+      $res= new Response(new StreamingTo($stream));
 
       try {
         foreach ($routing->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
         $this->tracing->log($req, $res);
-        $res->end();
 
-        return $res->output()->document;
+        $res->end();
       } catch (Throwable $t) {
         $e= $t instanceof Error ? $t : new InternalServerError($t);
         $this->tracing->log($req, $res, $e);
-        return $res->output()->error($e);
+
+        $res->answer($e->status(), $e->getMessage());
+        $res->header('x-amzn-ErrorType', nameof($e));
+        $res->send($e->compoundMessage(), 'text/plain');
       }
     };
   }

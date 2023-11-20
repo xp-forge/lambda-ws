@@ -76,12 +76,17 @@ class ResponseDocument extends Output {
    * @return [:var]
    */
   public function error($e) {
+    $message= $e->compoundMessage();
     return [
       'statusCode'        => $e->status(),
       'statusDescription' => $e->getMessage(),
       'isBase64Encoded'   => false,
-      'headers'           => ['Content-Type' => 'text/plain', 'x-amzn-ErrorType' => nameof($e)],
-      'body'              => $e->compoundMessage(),
+      'headers'           => [
+        'Content-Type'     => 'text/plain',
+        'Content-Length'   => strlen($message),
+        'x-amzn-ErrorType' => nameof($e)
+      ],
+      'body'              => $message,
     ];
   }
 
@@ -104,7 +109,7 @@ class ResponseDocument extends Output {
     }
 
     // Report unencoded length in headers
-    $this->document['headers']['Content-Length']= (string)strlen($this->document['body']);
+    $this->document['headers']['Content-Length']= strlen($this->document['body']);
     if ($this->document['isBase64Encoded']) {
       $this->document['body']= base64_encode($this->document['body']);
     }

@@ -40,7 +40,7 @@ class ResponseDocumentTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'headers'           => ['Content-Length' => '4'],
+        'headers'           => ['Content-Length' => 4],
         'body'              => 'Test',
       ],
       $out->document
@@ -59,7 +59,7 @@ class ResponseDocumentTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => $mime, 'Content-Length' => '4'],
+        'headers'           => ['Content-Type' => $mime, 'Content-Length' => 4],
         'body'              => 'Test',
       ],
       $out->document
@@ -78,7 +78,7 @@ class ResponseDocumentTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => $mime, 'Content-Length' => '15'],
+        'headers'           => ['Content-Type' => $mime, 'Content-Length' => 15],
         'body'              => '{"key":"value"}',
       ],
       $out->document
@@ -97,7 +97,7 @@ class ResponseDocumentTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => true,
-        'headers'           => ['Content-Type' => 'image/gif', 'Content-Length' => '9'],
+        'headers'           => ['Content-Type' => 'image/gif', 'Content-Length' => 9],
         'body'              => 'R0lGODlhLi4u',
       ],
       $out->document
@@ -116,7 +116,7 @@ class ResponseDocumentTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => true,
-        'headers'           => ['Content-Type' => 'text/plain', 'Content-Encoding' => 'gzip', 'Content-Length' => '12'],
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Encoding' => 'gzip', 'Content-Length' => 12],
         'body'              => 'eJwLSS0uAQAD3QGh',
       ],
       $out->document
@@ -135,7 +135,7 @@ class ResponseDocumentTest {
         'statusCode'        => 200,
         'statusDescription' => 'OK',
         'isBase64Encoded'   => false,
-        'headers'           => ['Content-Length' => '4'],
+        'headers'           => ['Content-Length' => 4],
         'body'              => 'Test',
       ],
       $out->document
@@ -151,7 +151,11 @@ class ResponseDocumentTest {
         'statusCode'        => 404,
         'statusDescription' => 'Not Found',
         'isBase64Encoded'   => false,
-        'headers'           => ['Content-Type' => 'text/plain', 'x-amzn-ErrorType' => 'web.Error'],
+        'headers'           => [
+          'Content-Type'     => 'text/plain',
+          'Content-Length'   => 32,
+          'x-amzn-ErrorType' => 'web.Error'
+        ],
         'body'              => 'Error web.Error(#404: Not Found)',
       ],
       $out->error(new Error(404))

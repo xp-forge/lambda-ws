@@ -15,9 +15,9 @@ Example
 Put this code in a file called *Greet.class.php*:
 
 ```php
-use com\amazon\aws\lambda\HttpApi;
+use com\amazon\aws\lambda\HttpIntegration;
 
-class Greet extends HttpApi {
+class Greet extends HttpIntegration {
 
   /**
    * Returns routes
@@ -65,30 +65,33 @@ By adding `-m develop`, these can be run in the development webserver.
 
 Setup and deployment
 --------------------
-Follow the steps shown on the [xp-forge/lambda README](https://github.com/xp-forge/lambda) to create the runtime layer, the service role and the lambda function itself. Next, create the API gateway as follows:
+Follow the steps shown on the [xp-forge/lambda README](https://github.com/xp-forge/lambda) to create the runtime layer, the service role and the lambda function itself. Next, create the function URL as follows:
 
 ```bash
-$ aws apigatewayv2 create-api \
-  --name hello-api \
-  --protocol-type HTTP \
-  --target "arn:aws:lambda:eu-central-1:XXXXXXXXXXXX:function:hello"
+$ aws lambda create-function-url-config \
+  --function-name greet \
+  --auth-type NONE \
+  --invoke-mode RESPONSE_STREAM
 ```
 
-The API's HTTP endpoint will be returned by this command.
+The URL will be returned by this command.
 
 Invocation
 ----------
 You can either open the HTTP endpoint in your browser or by using *curl*:
 
 ```bash
-$ curl -i https://XXXXXXXXXX.execute-api.eu-central-1.amazonaws.com/hello?name=$USER
-HTTP/2 200
-date: Sat, 28 Aug 2021 21:26:13 GMT
-content-type: text/plain
-content-length: 60
-apigw-requestid: Ey9-Xg_UliAEPKQ=
+$ curl -i https://XXXXXXXXXX.lambda-url.eu-central-1.on.aws/?name=$USER
+Date: Sun, 18 Jun 2023 20:00:55 GMT
+Content-Type: text/plain
+Transfer-Encoding: chunked
+Connection: keep-alive
+x-amzn-RequestId: 3505bbff-e39e-42d3-98d7-9827fb3eb093
+x-amzn-Remapped-content-length: 59
+Set-Cookie: visited=1687118455; SameSite=Lax; HttpOnly
+X-Amzn-Trace-Id: root=1-648f6276-672c96fe6230795d23453441;sampled=0;lineage=83e616e2:0
 
-Hello timmf from PHP 8.0.10 on stage $default @ eu-central-1
+Hello timmf from PHP 8.2.7 on stage $default @ eu-central-1
 ```
 
 Deploying changes
