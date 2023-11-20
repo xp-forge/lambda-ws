@@ -5,8 +5,11 @@ AWS Lambda Webservices change log
 
 ## 2.0.0 / ????-??-??
 
+* **Heads up:** Bumped minimum version requirement for `xp-forge/web`
+  to version 3.0.0
+  (@thekid)
 * Merged PR #10: Implement HTTP response streaming. This bumps the
-  minimum version requirement for `xp-forge/lambda` to version 5.0+
+  minimum version requirement for `xp-forge/lambda` to version 5.0.0
   (@thekid)
 
 ## 1.3.0 / 2023-11-20
