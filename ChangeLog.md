@@ -5,6 +5,8 @@ AWS Lambda Webservices change log
 
 ## 2.0.0 / ????-??-??
 
+* **Heads up:** Dropped support for XP <= 9, see xp-framework/rfc#341
+  (@thekid)
 * **Heads up:** Bumped minimum version requirement for `xp-forge/web`
   to version 3.0.0
   (@thekid)
