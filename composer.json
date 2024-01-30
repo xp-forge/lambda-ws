@@ -8,7 +8,7 @@
   "require" : {
     "xp-framework/core": "^11.0 | ^10.0",
     "xp-forge/lambda": "^5.0",
-    "xp-forge/web": "^3.0",
+    "xp-forge/web": "^4.0 | ^3.0",
     "php": ">=7.0.0"
   },
   "require-dev" : {
