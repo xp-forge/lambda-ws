@@ -3,6 +3,12 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 2.1.0 / 2024-01-30
+
+* Merged PR #12: Check for `xp-forge/web ^4.0` applications, which
+  provide an initializer (see https://github.com/xp-forge/web/pull/91)
+  (@thekid)
+
 ## 2.0.0 / 2023-11-20
 
 * **Heads up:** Dropped support for XP <= 9, see xp-framework/rfc#341
