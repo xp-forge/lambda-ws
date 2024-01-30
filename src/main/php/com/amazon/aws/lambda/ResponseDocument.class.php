@@ -9,7 +9,7 @@ use web\io\Output;
  * @see   https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
  */
 class ResponseDocument extends Output {
-  public $document;
+  public $document= ['body' => null];
 
   /** @return web.io.Output */
   public function stream() { return $this; }
@@ -62,7 +62,7 @@ class ResponseDocument extends Output {
 
     foreach ($headers as $name => $values) {
       if ('Set-Cookie' === $name) {
-        $this->document['cookies']= $values;
+        $this->document['cookies']= array_values($values);
       } else {
         $this->document['headers'][$name]= current($values);
       }
