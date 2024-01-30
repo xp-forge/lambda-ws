@@ -62,7 +62,7 @@ class ResponseDocument extends Output {
 
     foreach ($headers as $name => $values) {
       if ('Set-Cookie' === $name) {
-        $this->document['cookies']= $values;
+        $this->document['cookies']= array_values($values);
       } else {
         $this->document['headers'][$name]= current($values);
       }
