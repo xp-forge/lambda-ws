@@ -9,7 +9,7 @@ use web\io\Output;
  * @see   https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
  */
 class ResponseDocument extends Output {
-  public $document;
+  public $document= ['body' => null];
 
   /** @return web.io.Output */
   public function stream() { return $this; }
