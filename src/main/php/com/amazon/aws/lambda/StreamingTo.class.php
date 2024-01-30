@@ -41,7 +41,7 @@ class StreamingTo extends Output {
     ];
     foreach ($headers as $name => $values) {
       if ('Set-Cookie' === $name) {
-        $meta['cookies']= $values;
+        $meta['cookies']= array_values($values);
       } else {
         $meta['headers'][$name]= current($values);
       }
