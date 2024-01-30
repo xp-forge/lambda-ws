@@ -1,6 +1,6 @@
 <?php namespace com\amazon\aws\lambda;
 
-use web\{Routing, Environment as WebEnv};
+use web\{Application, Routing, Environment as WebEnv};
 
 /**
  * Base class for HTTP APIs with the following implementations:
@@ -29,13 +29,19 @@ abstract class HttpIntegration extends Handler {
 
   /** @return web.Routing */
   protected final function routing() {
-    return Routing::cast($this->routes(new WebEnv(
+    $routes= $this->routes(new WebEnv(
       $this->environment->variable('PROFILE') ?? 'prod',
       $this->environment->root,
       $this->environment->path('static'),
       [$this->environment->properties],
       [],
       $this->tracing
-    )));
+    ));
+
+    // Check for `xp-forge/web ^4.0` applications, which provide an initializer
+    if ($routes instanceof Application && method_exists($routes, 'initialize')) {
+      $routes->initialize();
+    }
+    return Routing::cast($routes);
   }
 }

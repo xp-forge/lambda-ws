@@ -277,4 +277,33 @@ abstract class InvocationTest {
       $this->trace->bytes()
     );
   }
+
+  #[Test]
+  public function calls_web_application_initializers() {
+    $fixture= new class(new WebEnvironment('test')) extends Application {
+      private $initialized= 0;
+
+      public function initialize() {
+        $this->initialized++;
+      }
+
+      public function routes() {
+        return ['/' => function($req, $res) {
+          $res->answer(200);
+          $res->send("Initialized {$this->initialized}", 'text/plain');
+        }];
+      }
+    };
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => false,
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => 13],
+        'body'              => 'Initialized 1',
+      ],
+      $this->transform($this->invoke($fixture, 'GET', 'name=Test'))
+    );
+  }
 }
