@@ -3,6 +3,10 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 2.2.0 / 2024-03-24
+
+* Made compatible with XP 12 - @thekid
+
 ## 2.1.0 / 2024-01-30
 
 * Merged PR #12: Check for `xp-forge/web ^4.0` applications, which

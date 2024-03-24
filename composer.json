@@ -6,13 +6,13 @@
   "description" : "AWS Lambda Webservices for the XP Framework",
   "keywords": ["module", "xp"],
   "require" : {
-    "xp-framework/core": "^11.0 | ^10.0",
+    "xp-framework/core": "^12.0 | ^11.0 | ^10.0",
     "xp-forge/lambda": "^5.0",
     "xp-forge/web": "^4.0 | ^3.0",
     "php": ">=7.0.0"
   },
   "require-dev" : {
-    "xp-framework/test": "^1.0"
+    "xp-framework/test": "^2.0 | ^1.0"
   },
   "autoload" : {
     "files" : ["src/main/php/autoload.php"]
