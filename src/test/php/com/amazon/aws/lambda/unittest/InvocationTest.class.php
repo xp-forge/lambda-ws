@@ -139,6 +139,30 @@ abstract class InvocationTest {
   }
 
   #[Test]
+  public function sending_dispatch() {
+    $fixture= [
+      '/target' => function($req, $res) {
+        $res->answer(200);
+        $res->send('Hello '.$req->param('name'), 'text/plain');
+      },
+      '/' => function($req, $res) {
+        return $req->dispatch('/target', ['name' => 'Test']);
+      },
+    ];
+
+    Assert::equals(
+      [
+        'statusCode'        => 200,
+        'statusDescription' => 'OK',
+        'isBase64Encoded'   => false,
+        'headers'           => ['Content-Type' => 'text/plain', 'Content-Length' => 10],
+        'body'              => 'Hello Test',
+      ],
+      $this->transform($this->invoke($fixture, 'GET'))
+    );
+  }
+
+  #[Test]
   public function throwing_error() {
     $fixture= ['/' => function($req, $res) {
       throw new Error(404, 'Not Found');

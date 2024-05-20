@@ -14,16 +14,16 @@ abstract class HttpApi extends HttpIntegration {
 
   /** @return callable|com.amazon.aws.lambda.Lambda|com.amazon.aws.lambda.Streaming */
   public function target() {
-    $routing= $this->routing();
+    $app= $this->application();
 
     // Return event handler
-    return function($event, $context) use($routing) {
+    return function($event, $context) use($app) {
       $in= new FromApiGateway($event);
       $req= new Request($in);
       $res= new Response(new ResponseDocument());
 
       try {
-        foreach ($routing->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
+        foreach ($app->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
         $this->tracing->log($req, $res);
         $res->end();
 

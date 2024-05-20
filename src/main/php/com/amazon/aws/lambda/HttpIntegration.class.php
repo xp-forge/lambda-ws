@@ -27,21 +27,34 @@ abstract class HttpIntegration extends Handler {
    */
   public abstract function routes($environment);
 
-  /** @return web.Routing */
-  protected final function routing() {
-    $routes= $this->routes(new WebEnv(
+  /** @return web.Application */
+  protected final function application() {
+    $env= new WebEnv(
       $this->environment->variable('PROFILE') ?? 'prod',
       $this->environment->root,
       $this->environment->path('static'),
       [$this->environment->properties],
       [],
       $this->tracing
-    ));
+    );
+    $routes= $this->routes($env);
 
     // Check for `xp-forge/web ^4.0` applications, which provide an initializer
-    if ($routes instanceof Application && method_exists($routes, 'initialize')) {
-      $routes->initialize();
+    if ($routes instanceof Application) {
+      method_exists($routes, 'initialize') && $routes->initialize();
+      return $routes;
     }
-    return Routing::cast($routes);
+
+    // Wrap routes inside an application to ensure application-level functionality
+    return new class($env, $routes) extends Application {
+      private $routes;
+
+      public function __construct($env, $routes) {
+        parent::__construct($env);
+        $this->routes= $routes;
+      }
+
+      public function routes() { return $this->routes; }
+    };
   }
 }

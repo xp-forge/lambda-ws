@@ -3,6 +3,12 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 2.3.0 / 2024-05-20
+
+* Added support for dispatching on application level, introduced in
+  https://github.com/xp-forge/web/releases/tag/v4.2.0
+  (@thekid)
+
 ## 2.2.0 / 2024-03-24
 
 * Made compatible with XP 12 - @thekid
