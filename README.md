@@ -6,7 +6,7 @@ AWS Lambda Webservices for the XP Framework
 [![BSD Licence](https://raw.githubusercontent.com/xp-framework/web/master/static/licence-bsd.png)](https://github.com/xp-framework/core/blob/master/LICENCE.md)
 [![Requires PHP 7.0+](https://raw.githubusercontent.com/xp-framework/web/master/static/php-7_0plus.svg)](http://php.net/)
 [![Supports PHP 8.0+](https://raw.githubusercontent.com/xp-framework/web/master/static/php-8_0plus.svg)](http://php.net/)
-[![Latest Stable Version](https://poser.pugx.org/xp-forge/lambda-ws/version.png)](https://packagist.org/packages/xp-forge/lambda-ws)
+[![Latest Stable Version](https://poser.pugx.org/xp-forge/lambda-ws/version.svg)](https://packagist.org/packages/xp-forge/lambda-ws)
 
 Run [XP web applications](https://github.com/xp-forge/web) on AWS lambda using [API Gateway](https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html) or [Lambda Function URLs](https://aws.amazon.com/de/blogs/aws/announcing-aws-lambda-function-urls-built-in-https-endpoints-for-single-function-microservices/). Unlike other implementations, this library does not spawn PHP-FPM but runs requests directly, resulting in an overhead of less than 1ms.
 
