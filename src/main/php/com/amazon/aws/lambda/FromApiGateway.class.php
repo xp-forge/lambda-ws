@@ -54,7 +54,7 @@ class FromApiGateway implements Input {
   public function method() { return $this->event['requestContext']['http']['method'] ?? 'GET'; }
 
   /** @return string */
-  public function uri() {
+  public function resource() {
     return $this->event['rawQueryString']
       ? $this->event['rawPath'].'?'.$this->event['rawQueryString']
       : $this->event['rawPath']

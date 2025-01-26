@@ -24,14 +24,13 @@ abstract class HttpApi extends HttpIntegration {
 
       try {
         foreach ($app->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
-        $this->tracing->log($req, $res);
+        $this->tracing->exchange($req, $res, $res->trace + ['traceId' => $context->traceId]);
         $res->end();
 
         return $res->output()->document;
       } catch (Throwable $t) {
-        $e= $t instanceof Error ? $t : new InternalServerError($t);
-        $this->tracing->log($req, $res, $e);
-        return $res->output()->error($e);
+        $this->tracing->exchange($req, $res, $res->trace + ['traceId' => $context->traceId, 'error' => $t]);
+        return $res->output()->error($t instanceof Error ? $t : new InternalServerError($t));
       }
     };
   }

@@ -24,13 +24,13 @@ abstract class HttpStreaming extends HttpIntegration {
 
       try {
         foreach ($app->service($req->pass('context', $context)->pass('request', $in->context()), $res) ?? [] as $_) { }
-        $this->tracing->log($req, $res);
+        $this->tracing->exchange($req, $res, $res->trace + ['traceId' => $context->traceId]);
 
         $res->end();
       } catch (Throwable $t) {
-        $e= $t instanceof Error ? $t : new InternalServerError($t);
-        $this->tracing->log($req, $res, $e);
+        $this->tracing->exchange($req, $res, $res->trace + ['traceId' => $context->traceId, 'error' => $t]);
 
+        $e= $t instanceof Error ? $t : new InternalServerError($t);
         $res->answer($e->status(), $e->getMessage());
         $res->header('x-amzn-ErrorType', nameof($e));
         $res->send($e->compoundMessage(), 'text/plain');
