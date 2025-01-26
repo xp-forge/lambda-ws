@@ -297,7 +297,7 @@ abstract class InvocationTest {
     $this->invoke($fixture, 'GET', 'name=Test');
 
     Assert::equals(
-      "TRACE [Root=1-dc99d00f-c079a84d433534434534ef0d;Parent=91ed514f1e5c03b2;Sampled=1] 200 GET /default/test?name=Test \n",
+      "TRACE [Root=1-dc99d00f-c079a84d433534434534ef0d;Parent=91ed514f1e5c03b2;Sampled=1] 200 GET /default/test?name=Test []\n",
       $this->trace->bytes()
     );
   }

@@ -8,8 +8,8 @@
   "require" : {
     "xp-framework/core": "^12.0 | ^11.0 | ^10.0",
     "xp-forge/lambda": "^5.0",
-    "xp-forge/web": "^4.0 | ^3.0",
-    "php": ">=7.0.0"
+    "xp-forge/web": "dev-feature/websockets as 5.0.0",
+    "php": ">=7.4.0"
   },
   "require-dev" : {
     "xp-framework/test": "^2.0 | ^1.0"

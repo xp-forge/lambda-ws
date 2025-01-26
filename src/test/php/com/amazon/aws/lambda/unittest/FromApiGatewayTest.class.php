@@ -79,13 +79,13 @@ class FromApiGatewayTest {
   }
 
   #[Test]
-  public function uri() {
-    Assert::equals('/default/test', $this->fixture('GET')->uri());
+  public function resource() {
+    Assert::equals('/default/test', $this->fixture('GET')->resource());
   }
 
   #[Test]
-  public function uri_including_query() {
-    Assert::equals('/default/test?name=Test', $this->fixture('GET', 'name=Test')->uri());
+  public function resource_including_query() {
+    Assert::equals('/default/test?name=Test', $this->fixture('GET', 'name=Test')->resource());
   }
 
   #[Test, Values([[[]], [['accept' => '*/*', 'user-agent' => 'test']]])]
