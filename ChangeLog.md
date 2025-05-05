@@ -3,6 +3,12 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 3.0.0 / 2025-05-05
+
+* **Heads up**: Dropped support for PHP < 7.4, see xp-framework/rfc#343
+  (@thekid)
+* Added PHP 8.5 to test matrix - @thekid
+
 ## 2.3.0 / 2024-05-20
 
 * Added support for dispatching on application level, introduced in
