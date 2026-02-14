@@ -3,6 +3,12 @@ AWS Lambda Webservices change log
 
 ## ?.?.? / ????-??-??
 
+## 4.0.0 / 2026-02-14
+
+* Made compatible with `xp-forge/lambda` version 7.0, which uses AL2023
+  instead of AL2, which has an EOL date of June 2026. Dropped support
+  for version 5.0 of this library at the same time.
+  (@thekid)
 * Added PHP 8.6 to the test matrix - @thekid
 
 ## 3.0.0 / 2025-05-05
