@@ -33,15 +33,13 @@ abstract class HttpIntegration extends Handler {
       $this->environment->variable('PROFILE') ?? 'prod',
       $this->environment->root,
       $this->environment->path('static'),
-      [$this->environment->properties],
-      [],
-      $this->tracing
+      [$this->environment->properties]
     );
     $routes= $this->routes($env);
 
     // Check for `xp-forge/web ^4.0` applications, which provide an initializer
     if ($routes instanceof Application) {
-      method_exists($routes, 'initialize') && $routes->initialize();
+      method_exists($routes, 'initialize') && $routes->initialize(null);
       return $routes;
     }
 

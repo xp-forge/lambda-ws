@@ -1,21 +1,21 @@
 <?php namespace com\amazon\aws\lambda;
 
-use web\Logging;
-use web\logging\ToFunction;
-
-class Tracing extends Logging {
+class Tracing {
+  private $environment;
 
   public function __construct(Environment $environment) {
-    parent::__construct(new ToFunction(function($request, $response, $error= null) use($environment) {
-      $query= $request->uri()->query();
-      $environment->trace(sprintf(
-        'TRACE [%s] %d %s %s %s',
-        $request->value('context')->traceId,
-        $response->status(),
-        $request->method(),
-        $request->uri()->path().($query ? '?'.$query : ''),
-        $error ? $error->toString() : ''
-      ));
-    }));
+    $this->environment= $environment;
+  }
+
+  public function log($request, $response, $error= null) {
+    $query= $request->uri()->query();
+    $this->environment->trace(sprintf(
+      'TRACE [%s] %d %s %s %s',
+      $request->value('context')->traceId,
+      $response->status(),
+      $request->method(),
+      $request->uri()->path().($query ? '?'.$query : ''),
+      $error ? $error->toString() : ''
+    ));
   }
 }

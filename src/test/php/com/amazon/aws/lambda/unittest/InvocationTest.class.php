@@ -307,7 +307,7 @@ abstract class InvocationTest {
     $fixture= new class(new WebEnvironment('test')) extends Application {
       private $initialized= 0;
 
-      public function initialize() {
+      public function initialize($kernel= null) {
         $this->initialized++;
       }
 

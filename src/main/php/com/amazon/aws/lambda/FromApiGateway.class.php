@@ -54,12 +54,15 @@ class FromApiGateway implements Input {
   public function method() { return $this->event['requestContext']['http']['method'] ?? 'GET'; }
 
   /** @return string */
-  public function uri() {
+  public function resource() {
     return $this->event['rawQueryString']
       ? $this->event['rawPath'].'?'.$this->event['rawQueryString']
       : $this->event['rawPath']
     ;
   }
+
+  /** Compatibility with `xp-forge/web` 4.x */
+  public function uri() { return $this->resource(); }
 
   /** @return iterable */
   public function headers() {
